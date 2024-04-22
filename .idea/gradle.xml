@@ -8,6 +8,10 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/_desktop_app" />
+            <option value="$PROJECT_DIR$/_mobile_app" />
+            <option value="$PROJECT_DIR$/_server" />
+            <option value="$PROJECT_DIR$/desktop_app" />
           </set>
         </option>
       </GradleProjectSettings>

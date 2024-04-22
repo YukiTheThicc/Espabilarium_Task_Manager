@@ -1,2 +1,6 @@
 rootProject.name = 'Espabilarium_Task_Manager'
+include 'desktop_app'
+include '_desktop_app'
+include '_server'
+include '_mobile_app'
 
