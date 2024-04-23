@@ -1,5 +1,5 @@
 plugins {
-    id 'java'
+    id "java"
 }
 
 group 'esp'
@@ -11,10 +11,6 @@ repositories {
     }
     jcenter()
     mavenCentral()
-}
-
-tasks.withType(JavaCompile).configureEach {
-    options.encoding = 'UTF-8'
 }
 
 ext {
