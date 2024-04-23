@@ -1,3 +1,4 @@
+import ui.imgui.ImGuiLayer;
 import ui.Window;
 
 import static org.lwjgl.glfw.GLFW.glfwWindowShouldClose;
@@ -14,11 +15,12 @@ public class Espabilarium {
 
     // ATTRIBUTES
     private final Window window;
-    private boolean running = false;
+    private ImGuiLayer imgui;
 
     // CONSTRUCTORS
     public Espabilarium() {
         this.window = Window.get();
+        this.imgui = null;
     }
 
     // GETTERS & SETTERS
@@ -26,23 +28,30 @@ public class Espabilarium {
 
     // METHODS
     public void launch() {
+
+        // Initialize program
         window.init("Sapphire", "sapphire/icon.png");
+        imgui = new ImGuiLayer(window.getGlfwWindow());
+        imgui.init();
+
+        // Run program
         run();
-    }
 
-    public void update() {
-
+        // Close program
+        imgui.destroyImGui();
+        window.close();
     }
 
     public void run() {
-        running = true;
+        boolean running = true;
         while (running) {
             window.pollEvents();
+
+            imgui.update();
 
             window.endFrame();
             running = !shouldClose();
         }
-        window.close();
     }
 
     public boolean shouldClose() {
