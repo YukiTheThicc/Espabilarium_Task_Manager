@@ -1,4 +1,4 @@
-package ui.imgui;
+package espbilarium.ui.imgui;
 
 import imgui.*;
 import imgui.callback.ImStrConsumer;
@@ -12,8 +12,8 @@ import imgui.glfw.ImGuiImplGlfw;
 import imgui.internal.ImGuiDockNode;
 import imgui.type.ImBoolean;
 import org.joml.Vector2f;
-import ui.MouseControls;
-import ui.Window;
+import espbilarium.ui.MouseControls;
+import espbilarium.ui.Window;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
@@ -32,19 +32,13 @@ public class ImGuiLayer {
     private final ImGuiImplGl3 imGuiGl3 = new ImGuiImplGl3();
     private final ImGuiImplGlfw imGuiGlfw = new ImGuiImplGlfw();
     private final UserInterface ui;
-    private int dockId;
 
     // CONSTRUCTORS
     public ImGuiLayer(long windowPtr) {
         this.glfwWindow = windowPtr;
         this.ui = new UserInterface(this);
-        this.dockId = -1;
     }
 
-    // GETTERS & SETTERS
-    public int getDockId() {
-        return dockId;
-    }
 
     // METHODS
     public void init() {
@@ -83,6 +77,7 @@ public class ImGuiLayer {
         // !!! REVISE !!! Should be false once all callbacks are set up
         imGuiGlfw.init(glfwWindow, true);
         imGuiGl3.init("#version 330 core");
+
     }
 
     private void initCallbacks(ImGuiIO io) {
@@ -115,7 +110,7 @@ public class ImGuiLayer {
             io.setMouseDown(mouseDown);
 
             if (!io.getWantCaptureMouse() && mouseDown[1]) {
-                imgui.internal.ImGui.setWindowFocus(null);
+                ImGui.setWindowFocus(null);
             }
 
             if (!io.getWantCaptureMouse()) {
@@ -141,58 +136,28 @@ public class ImGuiLayer {
         glClear(GL_COLOR_BUFFER_BIT);
         // After Dear ImGui prepared a draw data, we use it in the LWJGL3 renderer.
         // At that moment ImGui will be rendered to the current OpenGL context.
-        imgui.internal.ImGui.render();
-        imGuiGl3.renderDrawData(imgui.internal.ImGui.getDrawData());
+        ImGui.render();
+        imGuiGl3.renderDrawData(ImGui.getDrawData());
 
         long backupWindowPtr = glfwGetCurrentContext();
-        imgui.internal.ImGui.updatePlatformWindows();
-        imgui.internal.ImGui.renderPlatformWindowsDefault();
+        ImGui.updatePlatformWindows();
+        ImGui.renderPlatformWindowsDefault();
         glfwMakeContextCurrent(backupWindowPtr);
-    }
-
-    private void setupDockSpace() {
-
-        int windowFlags = ImGuiWindowFlags.MenuBar | ImGuiWindowFlags.NoDocking | ImGuiWindowFlags.NoTitleBar |
-                ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoMove |
-                ImGuiWindowFlags.NoBringToFrontOnFocus | ImGuiWindowFlags.NoNavFocus;
-
-        ImGuiViewport mainViewport = imgui.internal.ImGui.getMainViewport();
-        imgui.internal.ImGui.setNextWindowPos(mainViewport.getWorkPosX(), mainViewport.getWorkPosY());
-        imgui.internal.ImGui.setNextWindowSize(mainViewport.getWorkSizeX() * 2, mainViewport.getWorkSizeY());
-        imgui.internal.ImGui.setNextWindowViewport(mainViewport.getID());
-        Vector2f windowPos = Window.getPosition();
-        imgui.internal.ImGui.setNextWindowPos(windowPos.x, windowPos.y);
-        imgui.internal.ImGui.setNextWindowSize(Window.getWidth(), Window.getHeight());
-
-        imgui.internal.ImGui.pushStyleVar(ImGuiStyleVar.WindowPadding, 0, 8);
-        imgui.internal.ImGui.begin("Dockspace Outer", new ImBoolean(true), windowFlags);
-        imgui.internal.ImGui.popStyleVar();
-
-        // Dockspace
-        dockId = imgui.internal.ImGui.dockSpace(imgui.internal.ImGui.getID("Dockspace"));
-        imgui.ImGui.setNextWindowDockID(dockId);
-
-        imgui.internal.ImGui.end();
     }
 
     private void startFrame() {
         imGuiGlfw.newFrame();
-        imgui.internal.ImGui.newFrame();
+        ImGui.newFrame();
     }
 
     public void update() {
         startFrame();
-        setupDockSpace();
-        ImGuiDockNode node = imgui.internal.ImGui.dockBuilderGetCentralNode(dockId);
-        imgui.internal.ImGui.setNextWindowDockID(node.getID());
-
         ui.render();
-
         endFrame();
     }
 
     public void destroyImGui() {
         imGuiGl3.dispose();
-        imgui.internal.ImGui.destroyContext();
+        ImGui.destroyContext();
     }
 }

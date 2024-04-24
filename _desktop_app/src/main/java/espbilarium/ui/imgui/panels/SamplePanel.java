@@ -1,7 +1,7 @@
-package ui.imgui.panels;
+package espbilarium.ui.imgui.panels;
 
 import imgui.ImGui;
-import ui.imgui.ImGuiLayer;
+import espbilarium.ui.imgui.ImGuiLayer;
 
 /**
  * SamplePanel

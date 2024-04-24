@@ -1,4 +1,4 @@
-package ui;
+package espbilarium.ui;
 
 import org.joml.Vector2f;
 import org.lwjgl.glfw.GLFWErrorCallback;
@@ -8,7 +8,7 @@ import org.lwjgl.openal.ALC;
 import org.lwjgl.openal.ALCCapabilities;
 import org.lwjgl.openal.ALCapabilities;
 import org.lwjgl.opengl.GL;
-import utils.EspUtils;
+import espbilarium.utils.EspUtils;
 
 import java.nio.IntBuffer;
 

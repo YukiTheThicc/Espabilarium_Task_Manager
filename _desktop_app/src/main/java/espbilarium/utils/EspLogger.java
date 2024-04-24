@@ -1,4 +1,4 @@
-package utils;
+package espbilarium.utils;
 
 /**
  * !!! ATTENTION !!! THIS IS A PLACEHOLDER CLASS

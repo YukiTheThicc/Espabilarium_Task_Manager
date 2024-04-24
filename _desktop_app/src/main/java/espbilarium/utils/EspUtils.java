@@ -1,4 +1,4 @@
-package utils;
+package espbilarium.utils;
 
 import org.lwjgl.glfw.GLFWImage;
 import org.lwjgl.system.MemoryStack;
