@@ -1,11 +1,8 @@
 package espbilarium;
 
-import espbilarium.ui.imgui.ImGuiLayer;
+import espbilarium.ui.ImGuiLayer;
 import espbilarium.ui.Window;
-import espbilarium.utils.EspDefaults;
-import espbilarium.utils.EspStyles;
-
-import java.util.HashMap;
+import espbilarium.utils.Resources;
 
 import static org.lwjgl.glfw.GLFW.glfwWindowShouldClose;
 
@@ -16,11 +13,7 @@ import static org.lwjgl.glfw.GLFW.glfwWindowShouldClose;
  */
 public class Espabilarium {
 
-    // CONSTANTS
-    private static final String UNKNOWN_LITERAL = "LIT_";
-
     // ATTRIBUTES
-    private static HashMap<String, String> literals = new HashMap<>();
     private final Window window;
     private ImGuiLayer imgui;
 
@@ -31,27 +24,17 @@ public class Espabilarium {
     }
 
     // METHODS
-    private static void fetchLiterals(String lang) {
-        boolean validFile = false;
-        // Glue code for literal
-        if (!validFile) {
-            EspDefaults.defaultLiterals(literals);
-        }
-    }
-
-    public static String getLiteral(String literal) {
-        if (literals.get(literal) != null) return literals.get(literal);
-        return literal + ": " + UNKNOWN_LITERAL;
-    }
 
     public void launch() {
-
         // Initialize program
+
+        // Init window and imgui layer
         window.init("Espabilarium", "icon.png");
         imgui = new ImGuiLayer(window.getGlfwWindow());
         imgui.init();
-        EspDefaults.defaultLiterals(literals);
-        EspStyles.setEspStyles();
+
+        // Initialize the resource pool and styles
+        Resources.init("file");
 
         // Run program
         run();

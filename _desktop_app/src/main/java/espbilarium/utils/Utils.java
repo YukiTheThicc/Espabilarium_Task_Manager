@@ -18,14 +18,14 @@ import java.util.Calendar;
 import static org.lwjgl.stb.STBImage.stbi_load;
 import static org.lwjgl.util.tinyfd.TinyFileDialogs.*;
 
-public class EspUtils {
+public class Utils {
 
     private static SimpleDateFormat sdf;
 
     // METHODS
     public static void init() {
-        EspUtils.sdf = new SimpleDateFormat("hh:mm:ss.SSS");
-        EspLogger.log(EspUtils.class, "Initializing Diamond utilities...");
+        Utils.sdf = new SimpleDateFormat("hh:mm:ss.SSS");
+        EspLogger.log(Utils.class, "Initializing Diamond utilities...");
     }
 
     /**
@@ -33,7 +33,7 @@ public class EspUtils {
      * @return Current time formatted
      */
     public static String getTime() {
-        return EspUtils.sdf.format(Calendar.getInstance().getTime());
+        return Utils.sdf.format(Calendar.getInstance().getTime());
     }
 
     /**
@@ -66,7 +66,7 @@ public class EspUtils {
         if (path != null && !path.isEmpty()) {
             file = new File(path);
             try {
-                if (file.createNewFile()) EspLogger.log(EspUtils.class,
+                if (file.createNewFile()) EspLogger.log(Utils.class,
                         "Overwriting file '" + file.getAbsolutePath() + "'");
             } catch (IOException e) {
                 throw new RuntimeException(e);
@@ -86,13 +86,13 @@ public class EspUtils {
                 try {
                     Files.write(file.toPath(), Arrays.asList(lines), StandardCharsets.UTF_8);
                 } catch (IOException e) {
-                    EspLogger.log(EspUtils.class, "Failed save to file: '" + file.getAbsolutePath() + "'", EspLoggerLevel.ERROR);
+                    EspLogger.log(Utils.class, "Failed save to file: '" + file.getAbsolutePath() + "'", EspLoggerLevel.ERROR);
                 }
             } else {
-                EspLogger.log(EspUtils.class, "Null or empty lines", EspLoggerLevel.ERROR);
+                EspLogger.log(Utils.class, "Null or empty lines", EspLoggerLevel.ERROR);
             }
         } else {
-            EspLogger.log(EspUtils.class, "Invalid file", EspLoggerLevel.ERROR);
+            EspLogger.log(Utils.class, "Invalid file", EspLoggerLevel.ERROR);
         }
     }
 
@@ -107,7 +107,7 @@ public class EspUtils {
             try {
                 data = Files.readAllBytes(Paths.get(file.getPath()));
             } catch (IOException e) {
-                EspLogger.log(EspUtils.class, "Failed to load data from file '" + file.getPath() + "'", EspLoggerLevel.ERROR);
+                EspLogger.log(Utils.class, "Failed to load data from file '" + file.getPath() + "'", EspLoggerLevel.ERROR);
             }
         }
         return data;

@@ -1,7 +1,7 @@
-package espbilarium.ui.imgui.panels;
+package espbilarium.ui.panels;
 
-import espbilarium.Espabilarium;
-import espbilarium.ui.imgui.ImGuiLayer;
+import espbilarium.ui.ImGuiLayer;
+import espbilarium.utils.Resources;
 import imgui.ImGui;
 import imgui.flag.ImGuiWindowFlags;
 
@@ -20,7 +20,7 @@ public class LeftPanel extends Panel {
 
     // CONSTRUCTORS
     public LeftPanel() {
-        super("left_panel", Espabilarium.getLiteral("left_panel"));
+        super("left_panel", Resources.literal("left_panel"));
         setFlags(ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoResize);
     }
 
@@ -31,10 +31,10 @@ public class LeftPanel extends Panel {
     // METHODS
     @Override
     public void renderPanel(ImGuiLayer layer) {
-        if (ImGui.begin(this.getTitle() + "###" + this.getId(), this.getFlags())) {
-            ImGui.text("This is the left panel!");
+        ImGui.begin(this.getTitle() + "###" + this.getId(), this.getFlags());
+        ImGui.text("This is the left panel!");
 
-            ImGui.end();
-        }
+        ImGui.button("Tasks");
+        ImGui.end();
     }
 }

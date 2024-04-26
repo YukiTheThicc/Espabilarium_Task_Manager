@@ -1,11 +1,9 @@
-package espbilarium.ui.imgui;
+package espbilarium.ui;
 
-import espbilarium.ui.Window;
-import espbilarium.ui.imgui.panels.DashboardPanel;
-import espbilarium.ui.imgui.panels.LeftPanel;
-import espbilarium.ui.imgui.panels.Panel;
+import espbilarium.ui.panels.DashboardPanel;
+import espbilarium.ui.panels.LeftPanel;
+import espbilarium.ui.panels.Panel;
 import imgui.ImGui;
-import imgui.ImGuiViewport;
 import imgui.ImGuiWindowClass;
 import imgui.flag.ImGuiDir;
 import imgui.flag.ImGuiDockNodeFlags;
@@ -34,7 +32,7 @@ public class UserInterface {
     private final ImInt dockId;
     private final ImInt leftPanelSlot;
     private final ImInt mainPanelSlot;
-    private ImGuiWindowClass slotsClass;
+    private final ImGuiWindowClass slotsClass;
     private boolean dockSpaceReady = false;
 
     // CONSTRUCTORS
@@ -81,6 +79,7 @@ public class UserInterface {
         ImGui.end();
 
         if (!dockSpaceReady) setupDockSpace();
+
         ImGui.setNextWindowClass(slotsClass);
         leftPanel.renderPanel(layer);
         ImGui.setNextWindowClass(slotsClass);

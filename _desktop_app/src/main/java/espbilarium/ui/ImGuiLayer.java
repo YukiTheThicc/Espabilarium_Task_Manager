@@ -1,19 +1,13 @@
-package espbilarium.ui.imgui;
+package espbilarium.ui;
 
+import espbilarium.utils.EspStyles;
 import imgui.*;
 import imgui.callback.ImStrConsumer;
 import imgui.callback.ImStrSupplier;
 import imgui.extension.implot.ImPlot;
 import imgui.flag.ImGuiConfigFlags;
-import imgui.flag.ImGuiStyleVar;
-import imgui.flag.ImGuiWindowFlags;
 import imgui.gl3.ImGuiImplGl3;
 import imgui.glfw.ImGuiImplGlfw;
-import imgui.internal.ImGuiDockNode;
-import imgui.type.ImBoolean;
-import org.joml.Vector2f;
-import espbilarium.ui.MouseControls;
-import espbilarium.ui.Window;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
@@ -32,6 +26,7 @@ public class ImGuiLayer {
     private final ImGuiImplGl3 imGuiGl3 = new ImGuiImplGl3();
     private final ImGuiImplGlfw imGuiGlfw = new ImGuiImplGlfw();
     private final UserInterface ui;
+    private boolean firstFrame = true;
 
     // CONSTRUCTORS
     public ImGuiLayer(long windowPtr) {
@@ -152,6 +147,10 @@ public class ImGuiLayer {
 
     public void update() {
         startFrame();
+        if (firstFrame) {
+            EspStyles.setEspStyles();
+            firstFrame = false;
+        }
         ui.render();
         endFrame();
     }

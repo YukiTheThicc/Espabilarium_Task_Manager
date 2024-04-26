@@ -1,8 +1,8 @@
-package espbilarium.ui.imgui.panels;
+package espbilarium.ui.panels;
 
 import imgui.flag.ImGuiWindowFlags;
 import imgui.type.ImBoolean;
-import espbilarium.ui.imgui.ImGuiLayer;
+import espbilarium.ui.ImGuiLayer;
 
 /**
  * Panel

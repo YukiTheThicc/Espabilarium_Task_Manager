@@ -1,7 +1,6 @@
-package espbilarium.ui.imgui.panels;
+package espbilarium.ui.panels;
 
 
-import espbilarium.Espabilarium;
 import imgui.internal.ImGui;
 
 /**

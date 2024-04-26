@@ -1,7 +1,7 @@
-package espbilarium.ui.imgui.panels;
+package espbilarium.ui.panels;
 
-import espbilarium.Espabilarium;
-import espbilarium.ui.imgui.ImGuiLayer;
+import espbilarium.utils.Resources;
+import espbilarium.ui.ImGuiLayer;
 import imgui.flag.ImGuiWindowFlags;
 import imgui.internal.ImGui;
 
@@ -20,7 +20,7 @@ public class DashboardPanel extends Panel {
 
     // CONSTRUCTORS
     public DashboardPanel() {
-        super("dashboard", Espabilarium.getLiteral("dashboard"));
+        super("dashboard", Resources.literal("dashboard"));
         setFlags(ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoResize);
     }
 
@@ -30,9 +30,8 @@ public class DashboardPanel extends Panel {
     // METHODS
     @Override
     public void renderPanel(ImGuiLayer layer) {
-        if (ImGui.begin(this.getTitle() + "###" + this.getId(), this.getFlags())) {
-            ImGui.text("This is the dashboard!");
-            ImGui.end();
-        }
+        ImGui.begin(this.getTitle() + "###" + this.getId(), this.getFlags());
+        ImGui.text("This is the dashboard!");
+        ImGui.end();
     }
 }
