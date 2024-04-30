@@ -10,30 +10,9 @@ import imgui.type.ImString;
 
 public class ImGuiUtils {
 
-    // ICON SIZES VARIABLES
-    public static float BIG_ICON_SIZE;
-    public static float MEDIUM_ICON_SIZE;
-    public static float SMALL_ICON_SIZE;
-    public static float BIG_COLUMN_SIZE;
-    public static float MEDIUM_COLUMN_SIZE;
-    public static float SMALL_COLUMN_SIZE;
-
     // FLAGS
     private static final int NODE_FLAGS = ImGuiTreeNodeFlags.DefaultOpen | ImGuiTreeNodeFlags.Selected |
             ImGuiTreeNodeFlags.OpenOnArrow | ImGuiTreeNodeFlags.OpenOnDoubleClick;
-
-    /**
-     * Calculates the icon sizes depending on the size of the font used by ImGUI. Needs to be called once the ImGUI context
-     * has been set up.
-     */
-    public static void init(float fontSize) {
-        BIG_ICON_SIZE = fontSize * 2.5f;
-        MEDIUM_ICON_SIZE = fontSize * 2f;
-        SMALL_ICON_SIZE = fontSize * 1.5f;
-        BIG_COLUMN_SIZE = fontSize * 30;
-        MEDIUM_COLUMN_SIZE = fontSize * 20;
-        SMALL_COLUMN_SIZE = fontSize * 10;
-    }
 
     // ----> SECTION START: INPUTS AND VARIABLE CONTROLS
 

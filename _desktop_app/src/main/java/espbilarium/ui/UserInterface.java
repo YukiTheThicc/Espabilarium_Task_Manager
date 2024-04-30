@@ -26,8 +26,8 @@ public class UserInterface {
             ImGuiWindowFlags.NoBringToFrontOnFocus | ImGuiWindowFlags.NoNavFocus;
 
     // ATTRIBUTES
-    private final Panel leftPanel;
-    private final Panel dashboard;
+    private Panel leftPanel;
+    private Panel dashboard;
     private final ImGuiLayer layer;
     private final ImInt dockId;
     private final ImInt leftPanelSlot;
@@ -37,8 +37,8 @@ public class UserInterface {
 
     // CONSTRUCTORS
     public UserInterface(ImGuiLayer layer) {
-        this.leftPanel = new LeftPanel();
-        this.dashboard = new DashboardPanel();
+        this.leftPanel = null;
+        this.dashboard = null;
         this.layer = layer;
         this.dockId = new ImInt(0);
         this.leftPanelSlot = new ImInt(0);
@@ -48,7 +48,12 @@ public class UserInterface {
     }
 
     // METHODS
-    public void setupDockSpace() {
+    public void init() {
+        leftPanel = new LeftPanel();
+        dashboard = new DashboardPanel();
+    }
+
+    private void setupDockSpace() {
 
         Vector2f windowSize = new Vector2f(Window.getWidth(), Window.getHeight());
         Vector2f windowPos = Window.getPosition();
@@ -58,7 +63,7 @@ public class UserInterface {
         imgui.internal.ImGui.dockBuilderSetNodeSize(dockId.get(), windowSize.x, windowSize.y);
         imgui.internal.ImGui.dockBuilderSetNodePos(dockId.get(), windowPos.x, windowPos.y);
 
-        imgui.internal.ImGui.dockBuilderSplitNode(dockId.get(), ImGuiDir.Left, 0.3f, leftPanelSlot,mainPanelSlot);
+        imgui.internal.ImGui.dockBuilderSplitNode(dockId.get(), ImGuiDir.Left, 0.3f, leftPanelSlot, mainPanelSlot);
         imgui.internal.ImGui.dockBuilderDockWindow(leftPanel.getTitle() + "###" + leftPanel.getId(), leftPanelSlot.get());
         imgui.internal.ImGui.dockBuilderDockWindow(dashboard.getTitle() + "###" + dashboard.getId(), mainPanelSlot.get());
         imgui.internal.ImGui.dockBuilderFinish(dockId.get());
@@ -84,7 +89,5 @@ public class UserInterface {
         leftPanel.renderPanel(layer);
         ImGui.setNextWindowClass(slotsClass);
         dashboard.renderPanel(layer);
-
-
     }
 }

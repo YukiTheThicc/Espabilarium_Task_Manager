@@ -1,5 +1,9 @@
 package espbilarium.utils;
 
+import espbilarium.ui.Image;
+
+import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -11,11 +15,12 @@ public class Resources {
 
     // CONSTANTS
     private static final String UNKNOWN_LITERAL = "UNKNOWN";
-    private static final String DEFAULT_ICON = "icon.png";
+    private static final String DEFAULT_ICON = "default.png";
+    private static final String DEFAULT_ICON_FOLDER = "res/icons";
 
     // ATTRIBUTES
     private static final HashMap<String, String> literals = new HashMap<>();
-    private static final HashMap<String, String> icons = new HashMap<>();
+    private static final HashMap<String, Object> icons = new HashMap<>();
     private static final HashMap<String, int[]> colors = new HashMap<>();
 
 
@@ -55,7 +60,20 @@ public class Resources {
         colors.put("font", new int[]{218, 224, 232, 255});
     }
 
-    private boolean loadLiteralsFromFile(String file) {
+    private static void loadAvailableIcons() {
+        ArrayList<File> iconsFiles = Utils.getFilesInDir("res/icons", "png");
+        for (File icon : iconsFiles) {
+            if (icon != null && icon.isFile()) {
+                Image iconTex = new Image();
+                iconTex.load(icon.getAbsolutePath());
+                if (iconTex.getId() != 0 && !"".equals(iconTex.getPath())) {
+                    icons.put(icon.getName(), iconTex);
+                }
+            }
+        }
+    }
+
+    private static boolean loadLiteralsFromFile(String file) {
         boolean validFile = false;
         // Glue code for literal
         if (!validFile) {
@@ -64,16 +82,7 @@ public class Resources {
         return true;
     }
 
-    private boolean loadAvailableIcons(String folder) {
-        boolean validFile = false;
-        // Glue code for literal
-        if (!validFile) {
-            defaultLiterals();
-        }
-        return true;
-    }
-
-    private boolean loadColorTheme(String file) {
+    private static boolean loadColorTheme(String file) {
         boolean validFile = false;
         // Glue code for literal
         if (!validFile) {
@@ -85,6 +94,7 @@ public class Resources {
     public static void init(String literalsFile) {
         defaultColors();
         defaultLiterals();
+        loadAvailableIcons();
     }
 
     public static String literal(String key) {
@@ -92,9 +102,11 @@ public class Resources {
         return key + ": " + UNKNOWN_LITERAL;
     }
 
-    public static String icon(String key) {
-        if (icons.get(key) != null) return literals.get(key);
-        return DEFAULT_ICON;
+    public static Object icon(String icon) {
+        if (icons.get(icon) != null) {
+            return icons.get(icon);
+        }
+        return icons.get("default.png");
     }
 
     public static int[] color(String key) {

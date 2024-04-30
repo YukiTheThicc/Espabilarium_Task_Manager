@@ -1,6 +1,9 @@
 package espbilarium.ui;
 
+import espbilarium.utils.EspLogger;
 import espbilarium.utils.EspStyles;
+import espbilarium.utils.ImGuiUtils;
+import espbilarium.utils.Utils;
 import imgui.*;
 import imgui.callback.ImStrConsumer;
 import imgui.callback.ImStrSupplier;
@@ -8,6 +11,9 @@ import imgui.extension.implot.ImPlot;
 import imgui.flag.ImGuiConfigFlags;
 import imgui.gl3.ImGuiImplGl3;
 import imgui.glfw.ImGuiImplGlfw;
+
+import java.io.File;
+import java.util.ArrayList;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
@@ -34,7 +40,6 @@ public class ImGuiLayer {
         this.ui = new UserInterface(this);
     }
 
-
     // METHODS
     public void init() {
 
@@ -48,7 +53,7 @@ public class ImGuiLayer {
         io.setBackendPlatformName("imgui_java_impl_glfw");
 
         initCallbacks(io);
-
+        addAvailableFonts(io);
         // Set up clipboard functionality
         io.setSetClipboardTextFn(new ImStrConsumer() {
             @Override
@@ -124,6 +129,24 @@ public class ImGuiLayer {
         });
     }
 
+    private void addAvailableFonts(imgui.ImGuiIO io) {
+
+        ArrayList<File> fontFiles = Utils.getFilesInDir("res/fonts", "ttf");
+        fontFiles.addAll(Utils.getFilesInDir("res/fonts", "otf"));
+        if (!fontFiles.isEmpty()) {
+            final ImFontAtlas fontAtlas = io.getFonts();
+            final ImFontConfig fontConfig = new ImFontConfig();
+            fontConfig.setGlyphRanges(fontAtlas.getGlyphRangesDefault());
+            fontConfig.setPixelSnapH(true);
+            for (File file : fontFiles) {
+                ImFont font = fontAtlas.addFontFromFileTTF(file.getAbsolutePath(), 16f, fontConfig);
+                imgui.internal.ImGui.getIO().setFontDefault(font);
+            }
+        } else {
+            EspLogger.log("Failed to load any font files from Sapphire fonts dir");
+        }
+    }
+
     private void endFrame() {
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -145,10 +168,16 @@ public class ImGuiLayer {
         ImGui.newFrame();
     }
 
+    /**
+     * Renders the ui. On the first frame certain initialization operations must be made (necessary because some panels
+     * and other setting may need access to ImGui, so the frame has to be started)
+     */
     public void update() {
         startFrame();
+        // Initialize whatever needs to be initialized when ImGui being accessible
         if (firstFrame) {
-            EspStyles.setEspStyles();
+            EspStyles.setEspStyles(ImGui.getFontSize());
+            ui.init();
             firstFrame = false;
         }
         ui.render();

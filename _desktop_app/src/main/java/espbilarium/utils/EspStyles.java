@@ -9,8 +9,23 @@ import imgui.internal.ImGui;
  * @author Santiago Barreiro
  */
 public class EspStyles {
+
+    // ICON SIZES VARIABLES
+    public static float BIG_ICON_SIZE;
+    public static float MEDIUM_ICON_SIZE;
+    public static float SMALL_ICON_SIZE;
+    public static float BIG_COLUMN_SIZE;
+    public static float MEDIUM_COLUMN_SIZE;
+    public static float SMALL_COLUMN_SIZE;
     
-    public static void setEspStyles() {
+    public static void setEspStyles(int fontSize) {
+
+        BIG_ICON_SIZE = fontSize * 2.5f;
+        MEDIUM_ICON_SIZE = fontSize * 2f;
+        SMALL_ICON_SIZE = fontSize * 1.5f;
+        BIG_COLUMN_SIZE = fontSize * 30;
+        MEDIUM_COLUMN_SIZE = fontSize * 20;
+        SMALL_COLUMN_SIZE = fontSize * 10;
 
         // Colors
         int[] dark_bg = Resources.color("dark_bg");
