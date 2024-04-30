@@ -1,4 +1,3 @@
 rootProject.name = 'Espabilarium_Task_Manager'
 include '_desktop_app'
-include '_server'
 
