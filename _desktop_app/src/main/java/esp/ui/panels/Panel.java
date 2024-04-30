@@ -1,8 +1,8 @@
-package ui.imgui.panels;
+package esp.ui.panels;
 
 import imgui.flag.ImGuiWindowFlags;
 import imgui.type.ImBoolean;
-import ui.imgui.ImGuiLayer;
+import esp.ui.ImGuiLayer;
 
 /**
  * Panel

@@ -1,17 +1,17 @@
-import ui.imgui.ImGuiLayer;
-import ui.Window;
+package esp;
+
+import esp.ui.ImGuiLayer;
+import esp.ui.Window;
+import esp.utils.Resources;
 
 import static org.lwjgl.glfw.GLFW.glfwWindowShouldClose;
 
 /**
- * Espabilarium
+ * espbilarium.Espabilarium
  *
  * @author Santiago Barreiro
  */
 public class Espabilarium {
-
-    // CONSTANTS
-
 
     // ATTRIBUTES
     private final Window window;
@@ -23,16 +23,17 @@ public class Espabilarium {
         this.imgui = null;
     }
 
-    // GETTERS & SETTERS
-
-
     // METHODS
     public void launch() {
-
         // Initialize program
-        window.init("Sapphire", "sapphire/icon.png");
+
+        // Init window and imgui layer
+        window.init("Espabilarium", "icon.png");
         imgui = new ImGuiLayer(window.getGlfwWindow());
         imgui.init();
+
+        // Initialize the resource pool and styles
+        Resources.init("file");
 
         // Run program
         run();

@@ -1,4 +1,4 @@
-package ui;
+package esp.ui;
 
 import org.joml.Vector2f;
 import java.util.Arrays;

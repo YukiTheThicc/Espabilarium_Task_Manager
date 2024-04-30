@@ -1,4 +1,4 @@
-package ui;
+package esp.ui;
 
 import org.joml.Vector2f;
 import org.lwjgl.glfw.GLFWErrorCallback;
@@ -8,7 +8,7 @@ import org.lwjgl.openal.ALC;
 import org.lwjgl.openal.ALCCapabilities;
 import org.lwjgl.openal.ALCapabilities;
 import org.lwjgl.opengl.GL;
-import utils.EspUtils;
+import esp.utils.Utils;
 
 import java.nio.IntBuffer;
 
@@ -142,7 +142,7 @@ public class Window {
         glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
         glfwShowWindow(glfwWindow);
 
-        GLFWImage.Buffer image = EspUtils.loadGLFWImage(iconPath);
+        GLFWImage.Buffer image = Utils.loadGLFWImage(iconPath);
         if (image != null) {
             glfwSetWindowIcon(glfwWindow, image);
             image.close();

@@ -1,5 +1,5 @@
 plugins {
-    id 'java'
+    id "java"
 }
 
 group 'esp'
@@ -13,10 +13,6 @@ repositories {
     mavenCentral()
 }
 
-tasks.withType(JavaCompile).configureEach {
-    options.encoding = 'UTF-8'
-}
-
 ext {
     junitVersion = '5.8.2'
 }
@@ -26,8 +22,8 @@ project.ext.lwjglVersion = "3.3.1"
 project.ext.imguiVersion = '1.86.11'
 project.ext.jomlVersion = "1.10.5"
 
-sourceCompatibility = "8"
-targetCompatibility = "8"
+sourceCompatibility = "17"
+targetCompatibility = "17"
 
 dependencies {
 

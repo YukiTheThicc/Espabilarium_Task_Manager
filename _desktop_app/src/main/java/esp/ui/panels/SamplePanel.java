@@ -1,7 +1,7 @@
-package ui.imgui.panels;
+package esp.ui.panels;
 
 import imgui.ImGui;
-import ui.imgui.ImGuiLayer;
+import esp.ui.ImGuiLayer;
 
 /**
  * SamplePanel
