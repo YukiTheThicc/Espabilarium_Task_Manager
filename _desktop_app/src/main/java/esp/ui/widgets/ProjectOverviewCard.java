@@ -1,0 +1,27 @@
+package esp.ui.widgets;
+
+import esp.api.ITask;
+import imgui.ImGui;
+
+/**
+ * ProjectOverviewCard
+ *
+ * @author Santiago Barreiro
+ */
+public class ProjectOverviewCard {
+
+    // METHODS
+    public static void render(ITask task) {
+        ImGui.pushID(task.getName());
+        ImGui.beginGroup();
+
+        float buttonOriginX = ImGui.getCursorPosX();
+        float buttonOriginY = ImGui.getCursorPosY();
+        ImGui.button("##", ImGui.getContentRegionAvailX(), 64);
+        ImGui.setCursorPos(buttonOriginX + ImGui.getStyle().getWindowPaddingX(), buttonOriginY + ImGui.getStyle().getWindowPaddingX());
+        ImGui.text(task.getName());
+
+        ImGui.endGroup();
+        ImGui.popID();
+    }
+}
