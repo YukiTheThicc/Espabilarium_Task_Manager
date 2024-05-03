@@ -15,12 +15,14 @@ public class Task implements ITask {
     // ATTRIBUTES
     private final String uuid;
     private String name;
-    private ITask parent;
     private float progress;
     private TaskType type;
     private TaskState state;
     private TaskPriority priority;
     private final ArrayList<ITask> children;
+
+    // RUNTIME ATTRIBUTES
+    private transient ITask parent;
 
     // CONSTRUCTORS
     public Task(String uuid, String name, TaskType type, TaskPriority priority) {

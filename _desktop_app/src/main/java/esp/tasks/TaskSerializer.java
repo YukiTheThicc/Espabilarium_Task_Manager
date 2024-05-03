@@ -1,24 +1,30 @@
 package esp.tasks;
 
+import com.google.gson.*;
+import esp.api.ITask;
+
+import java.lang.reflect.Type;
+
 /**
  * TaskSerializer
  *
  * @author Santiago Barreiro
  */
-public class TaskSerializer {
 
-    // CONSTANTS
-
-
-    // ATTRIBUTES
+public class TaskSerializer implements JsonDeserializer<ITask> {
 
 
     // CONSTRUCTORS
+    public TaskSerializer() {
+    }
 
-
-    // GETTERS & SETTERS
-
-
-    // METHODS
-    
+    @Override
+    public Task deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+        JsonObject jsonObject = json.getAsJsonObject();
+        try {
+            return context.deserialize(jsonObject, Task.class);
+        } catch (Exception e) {
+            throw new JsonParseException("Failed to load task", e);
+        }
+    }
 }

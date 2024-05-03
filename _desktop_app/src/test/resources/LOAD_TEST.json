@@ -1,0 +1,19 @@
+{
+  "uuid": "00000003",
+  "name": "Loading test Task",
+  "progress": 0.333333333,
+  "type": "PROJECT",
+  "state": "IN_PROGRESS",
+  "priority": "HIGHEST",
+  "children": [
+    {
+      "uuid": "00000002",
+      "name": "Task 2",
+      "progress": 0.0,
+      "type": "IDEA",
+      "state": "NEW",
+      "priority": "LOWEST",
+      "children": []
+    }
+  ]
+}
