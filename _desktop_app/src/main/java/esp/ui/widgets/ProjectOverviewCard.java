@@ -21,6 +21,14 @@ public class ProjectOverviewCard {
         ImGui.setCursorPos(buttonOriginX + ImGui.getStyle().getWindowPaddingX(), buttonOriginY + ImGui.getStyle().getWindowPaddingX());
         ImGui.text(task.getName());
 
+        if (task.getParent() != null) {
+            // Print parent info
+            ITask parent = task.getParent();
+            ImGui.text(parent.getName());
+        }
+
+        ImGui.progressBar(task.getProgress());
+
         ImGui.endGroup();
         ImGui.popID();
     }

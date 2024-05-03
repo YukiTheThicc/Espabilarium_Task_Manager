@@ -1,4 +1,4 @@
-package esp.ui.panels;
+package esp.ui.windows;
 
 import imgui.ImGui;
 import esp.ui.ImGuiLayer;
@@ -8,10 +8,10 @@ import esp.ui.ImGuiLayer;
  *
  * @author Santiago Barreiro
  */
-public class SamplePanel extends Panel {
+public class SampleWindow extends Window {
 
     // CONSTRUCTORS
-    public SamplePanel(String id, String title) {
+    public SampleWindow(String id, String title) {
         super(id, title);
     }
 
