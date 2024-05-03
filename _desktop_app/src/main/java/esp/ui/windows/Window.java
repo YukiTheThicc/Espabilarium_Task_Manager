@@ -1,4 +1,4 @@
-package esp.ui.panels;
+package esp.ui.windows;
 
 import imgui.flag.ImGuiWindowFlags;
 import imgui.type.ImBoolean;
@@ -9,7 +9,7 @@ import esp.ui.ImGuiLayer;
  *
  * @author Santiago Barreiro
  */
-public abstract class Panel {
+public abstract class Window {
 
     // CONSTANTS
     private static final float DEFAULT_SIZE_X = 400f;
@@ -26,7 +26,7 @@ public abstract class Panel {
     private int flags;
 
     // CONSTRUCTORS
-    public Panel(String id, String title) {
+    public Window(String id, String title) {
         this.id = id;
         this.title = title;
         this.isActive = new ImBoolean(false);

@@ -36,7 +36,7 @@ public class ImGuiLayer {
     // CONSTRUCTORS
     public ImGuiLayer(long windowPtr) {
         this.glfwWindow = windowPtr;
-        this.ui = new UserInterface(this);
+        this.ui = new UserInterface();
     }
 
     // METHODS
@@ -179,7 +179,7 @@ public class ImGuiLayer {
             ui.init();
             firstFrame = false;
         }
-        ui.render();
+        ui.render(this);
         endFrame();
     }
 

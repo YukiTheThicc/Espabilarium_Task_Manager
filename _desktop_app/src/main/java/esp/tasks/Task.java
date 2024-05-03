@@ -102,9 +102,7 @@ public class Task implements ITask {
     }
 
     public void removeChild(ITask toRemove) {
-        if (children.contains(toRemove)) {
-            children.remove(toRemove);
-        }
+        children.remove(toRemove);
     }
 
     @Override
