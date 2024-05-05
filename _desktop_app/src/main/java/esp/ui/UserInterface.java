@@ -1,14 +1,16 @@
 package esp.ui;
 
-import esp.tasks.Task;
-import esp.tasks.TaskPriority;
-import esp.tasks.TaskType;
-import esp.ui.widgets.ProjectOverviewCard;
+import esp.ui.views.ArchiveMainView;
+import esp.ui.views.DashboardMainView;
+import esp.ui.views.ProjectsMainView;
+import esp.ui.widgets.ImageSelectable;
 import esp.utils.Resources;
 import imgui.ImGui;
 import imgui.ImVec2;
 import imgui.flag.*;
 import org.joml.Vector2f;
+
+import java.util.ArrayList;
 
 /**
  * UserInteface
@@ -17,30 +19,58 @@ import org.joml.Vector2f;
  */
 public class UserInterface {
 
+    public enum MainView {
+        DASHBOARD,
+        PROJECTS,
+        ARCHIVE
+    }
+
     // CONSTANTS
-    private static final int OUTER_WINDOW = ImGuiWindowFlags.NoDocking | ImGuiWindowFlags.NoTitleBar |
+    public static final int MAIN_VIEW_FLAGS = ImGuiWindowFlags.NoDocking | ImGuiWindowFlags.NoTitleBar |
             ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoMove |
             ImGuiWindowFlags.NoBringToFrontOnFocus | ImGuiWindowFlags.NoNavFocus | ImGuiWindowFlags.NoScrollbar;
-    private static final int MENU_BAR_PADDING = 24;
-    private static final int MENU_BAR_OFFSET = 72;
+    private static final int MENU_BAR_PADDING = 24;         // Menu bar padding
+    private static final int MENU_BAR_OFFSET = 72;          // Menu bar offset (to place an image before the menu items)
+    private static final int LEFT_PANEL_MAX_WIDTH = 266;    // Static width fot the left panel
+    private static final int LEFT_PANEL_ICON_SIZE = 48;     // Size for the left panel icons
 
     // ATTRIBUTES
+    private final ArrayList<ImageSelectable> leftPanelOptions;      // List of button options to render in the left panel
+    private MainView currentView;                                   // Current view to display in the main view section
+    private boolean collapsedLP = false;                            // Flag that represents if the left panel is collapsed
 
     // STYLING ATTRIBUTES
-    private float menuBarHeight = MENU_BAR_PADDING;
-    private float menuBarItemSpacing = 8;
-    private ImVec2 itemSpacing;
+    private float menuBarHeight = MENU_BAR_PADDING;                 // Height of the menu bar
+    private float menuBarItemSpacing = 8;                           // Spacing for the items in the menu bar
+    private ImVec2 itemSpacing;                                     // Normal spacing for the rest of the items
+    private float currentLPWidth = LEFT_PANEL_MAX_WIDTH;            // Current width for the left panel
+    private float minLPWidth = LEFT_PANEL_MAX_WIDTH;                // Minimum width of the left panel
+    private float totalLPButtonsSize = LEFT_PANEL_MAX_WIDTH;
 
     // CONSTRUCTORS
     public UserInterface() {
-
+        this.leftPanelOptions = new ArrayList<>();
     }
 
     // METHODS
     public void init() {
+
+        ImVec2 framePadding = ImGui.getStyle().getFramePadding();
+        this.minLPWidth = LEFT_PANEL_ICON_SIZE + ImGui.getStyle().getFramePaddingX() * 6;
         this.menuBarHeight = ImGui.getFontSize() + MENU_BAR_PADDING * 2;
         this.menuBarItemSpacing = (MENU_BAR_PADDING - ImGui.getStyle().getWindowPaddingY()) * 2;
         this.itemSpacing = ImGui.getStyle().getItemSpacing();
+        this.currentView = MainView.DASHBOARD;
+
+        // Create left panel buttons
+        leftPanelOptions.add(new ImageSelectable((Image) Resources.icon("dashboard.png"), Resources.literal("dashboard"),
+                LEFT_PANEL_ICON_SIZE, LEFT_PANEL_ICON_SIZE, MainView.DASHBOARD));
+        leftPanelOptions.add(new ImageSelectable((Image) Resources.icon("projects.png"), Resources.literal("projects"),
+                LEFT_PANEL_ICON_SIZE, LEFT_PANEL_ICON_SIZE, MainView.PROJECTS));
+        leftPanelOptions.add(new ImageSelectable((Image) Resources.icon("archive.png"), Resources.literal("archive"),
+                LEFT_PANEL_ICON_SIZE, LEFT_PANEL_ICON_SIZE, MainView.ARCHIVE));
+
+        totalLPButtonsSize = leftPanelOptions.size() * LEFT_PANEL_ICON_SIZE + framePadding.x * (leftPanelOptions.size() + 2);
     }
 
     public void render(ImGuiLayer layer) {
@@ -50,12 +80,12 @@ public class UserInterface {
         ImGui.setNextWindowPos(windowPos.x, windowPos.y);
         ImGui.setNextWindowSize(Window.getWidth(), Window.getHeight());
 
-        ImGui.begin("##outer", OUTER_WINDOW | ImGuiWindowFlags.MenuBar);
+        ImGui.begin("##outer", MAIN_VIEW_FLAGS | ImGuiWindowFlags.MenuBar);
         renderMenuBar();
         ImGui.end();
 
         renderLeftPanel(windowPos);
-        renderDashBoard(windowPos);
+        renderMainPanel(windowPos);
     }
 
     private void renderMenuBar() {
@@ -65,7 +95,7 @@ public class UserInterface {
 
         Object image = Resources.icon("default.png");
         if (image instanceof Image) {
-            ImGui.image(((Image)image).getId(), 24f, 24f);
+            ImGui.image(((Image) image).getId(), 24f, 24f);
         }
         if (ImGui.beginMainMenuBar()) {
             ImGui.setCursorPosX(MENU_BAR_OFFSET);
@@ -78,43 +108,55 @@ public class UserInterface {
 
     /**
      * Renders the left panel of the main view
+     *
      * @param windowPos The current position of the window
      */
     private void renderLeftPanel(Vector2f windowPos) {
 
         ImGui.setNextWindowPos(windowPos.x, windowPos.y + menuBarHeight);
-        ImGui.setNextWindowSize(Window.getWidth() * 0.25f, Window.getHeight() - menuBarHeight);
+        ImGui.setNextWindowSize(currentLPWidth, Window.getHeight() - menuBarHeight);
         ImGui.pushStyleVar(ImGuiStyleVar.WindowBorderSize, 2);
         ImGui.pushStyleVar(ImGuiStyleVar.WindowRounding, 8);
+        ImGui.pushStyleVar(ImGuiStyleVar.ItemSpacing, ImGui.getStyle().getItemSpacingX(), ImGui.getStyle().getItemSpacingY() * 4);
 
-        ImGui.begin("##leftPanel", OUTER_WINDOW);
-        ImGui.textWrapped("This is the left panel!");
+        ImGui.begin("##leftPanel", MAIN_VIEW_FLAGS);
 
-        ProjectOverviewCard.render(new Task("001", "Task 1", TaskType.TASK, TaskPriority.LOWEST));
-        ProjectOverviewCard.render(new Task("002", "Task 2", TaskType.TASK, TaskPriority.LOWEST));
-        ProjectOverviewCard.render(new Task("003", "Task 3", TaskType.TASK, TaskPriority.LOWEST));
+        for (ImageSelectable option : leftPanelOptions) {
+            if (option != null) {
+                if (option.render(option.getCode() == currentView, collapsedLP)) currentView = (MainView) option.getCode();
+            }
+        }
+
+        ImGui.setCursorPos(ImGui.getWindowSizeX() - 48 - ImGui.getStyle().getFramePaddingX(),
+                ImGui.getWindowSizeY() - 48 - ImGui.getStyle().getFramePaddingY());
+        Image leftArrow = (Image) Resources.icon("left_arrow");
+        if (leftArrow != null && ImGui.imageButton(leftArrow.getId(), 24f, 24f)) collapsedLP = !collapsedLP;
+        else if (ImGui.button(Resources.literal("collapse_panel"))) collapsedLP = !collapsedLP;
+
+        if (collapsedLP) {
+            if (currentLPWidth > minLPWidth) currentLPWidth -= Math.pow(currentLPWidth / LEFT_PANEL_MAX_WIDTH, 2) * 5;
+        } else if (currentLPWidth < LEFT_PANEL_MAX_WIDTH) {
+            currentLPWidth += (1 - Math.pow(currentLPWidth / LEFT_PANEL_MAX_WIDTH, 2)) * 5;
+        }
 
         ImGui.end();
-        ImGui.popStyleVar(2);
+        ImGui.popStyleVar(3);
     }
 
     /**
-     * Renders the main view dashboard with a docking area
+     * Renders the CURRENT MAIN VIEW
+     *
      * @param windowPos The current position of the window
      */
-    private void renderDashBoard(Vector2f windowPos) {
+    private void renderMainPanel(Vector2f windowPos) {
 
-        ImGui.setNextWindowPos(windowPos.x + Window.getWidth() * 0.25f, windowPos.y + menuBarHeight);
-        ImGui.setNextWindowSize(Window.getWidth() * 0.75f, Window.getHeight() - menuBarHeight);
+        ImGui.setNextWindowPos(windowPos.x + currentLPWidth, windowPos.y + menuBarHeight);
+        ImGui.setNextWindowSize(Window.getWidth() - currentLPWidth, Window.getHeight() - menuBarHeight);
 
-        ImGui.pushStyleVar(ImGuiStyleVar.WindowPadding, 0f, 0f);
-        imgui.internal.ImGui.begin("##dashboard", OUTER_WINDOW);
-
-        // Setup dashboard docking space
-        int dashDock = ImGui.getID("dashboardDock");
-        ImGui.dockSpace(dashDock);
-
-        ImGui.end();
-        ImGui.popStyleVar(1);
+        switch (currentView) {
+            case PROJECTS -> ProjectsMainView.render();
+            case ARCHIVE -> ArchiveMainView.render();
+            default -> DashboardMainView.render();
+        }
     }
 }
