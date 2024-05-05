@@ -192,6 +192,8 @@ public class Utils {
      */
     public static ArrayList<File> getFilesInDir(String directory, String extension) {
         File dir = new File(directory);
+        System.out.println(dir.getAbsolutePath());
+        System.out.println(Arrays.toString(dir.listFiles()));
         ArrayList<File> retrievedFiles = new ArrayList<>();
         File[] files = dir.listFiles();
         if (files != null) {
