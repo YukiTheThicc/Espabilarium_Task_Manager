@@ -61,7 +61,7 @@ public class Resources {
     }
 
     private static void loadAvailableIcons() {
-        ArrayList<File> iconsFiles = Utils.getFilesInDir("res/icons", "png");
+        ArrayList<File> iconsFiles = Utils.getFilesInDir("res/icons/", "png");
         for (File icon : iconsFiles) {
             if (icon != null && icon.isFile()) {
                 Image iconTex = new Image();
