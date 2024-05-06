@@ -3,7 +3,7 @@ package esp.ui;
 import esp.ui.views.ArchiveMainView;
 import esp.ui.views.DashboardMainView;
 import esp.ui.views.ProjectsMainView;
-import esp.ui.widgets.ImageSelectable;
+import esp.ui.widgets.ImageButton;
 import esp.utils.Resources;
 import imgui.ImGui;
 import imgui.ImVec2;
@@ -35,9 +35,10 @@ public class UserInterface {
     private static final int LEFT_PANEL_ICON_SIZE = 48;     // Size for the left panel icons
 
     // ATTRIBUTES
-    private final ArrayList<ImageSelectable> leftPanelOptions;      // List of button options to render in the left panel
+    private final ArrayList<ImageButton> leftPanelOptions;          // List of button options to render in the left panel
     private MainView currentView;                                   // Current view to display in the main view section
     private boolean collapsedLP = false;                            // Flag that represents if the left panel is collapsed
+    private ProjectsMainView projectsMainView;                      // Projects main view object
 
     // STYLING ATTRIBUTES
     private float menuBarHeight = MENU_BAR_PADDING;                 // Height of the menu bar
@@ -62,18 +63,21 @@ public class UserInterface {
         this.itemSpacing = ImGui.getStyle().getItemSpacing();
         this.currentView = MainView.DASHBOARD;
 
+        // Create main views
+        this.projectsMainView = new ProjectsMainView();
+
         // Create left panel buttons
-        leftPanelOptions.add(new ImageSelectable((Image) Resources.icon("dashboard.png"), Resources.literal("dashboard"),
+        leftPanelOptions.add(new ImageButton((Image) Resources.icon("dashboard.png"), Resources.literal("dashboard"),
                 LEFT_PANEL_ICON_SIZE, LEFT_PANEL_ICON_SIZE, MainView.DASHBOARD));
-        leftPanelOptions.add(new ImageSelectable((Image) Resources.icon("projects.png"), Resources.literal("projects"),
+        leftPanelOptions.add(new ImageButton((Image) Resources.icon("projects.png"), Resources.literal("projects"),
                 LEFT_PANEL_ICON_SIZE, LEFT_PANEL_ICON_SIZE, MainView.PROJECTS));
-        leftPanelOptions.add(new ImageSelectable((Image) Resources.icon("archive.png"), Resources.literal("archive"),
+        leftPanelOptions.add(new ImageButton((Image) Resources.icon("archive.png"), Resources.literal("archive"),
                 LEFT_PANEL_ICON_SIZE, LEFT_PANEL_ICON_SIZE, MainView.ARCHIVE));
 
         totalLPButtonsSize = leftPanelOptions.size() * LEFT_PANEL_ICON_SIZE + framePadding.x * (leftPanelOptions.size() + 2);
     }
 
-    public void render(ImGuiLayer layer) {
+    public void render(ImGuiLayer layer, float dt) {
 
         // Background window
         Vector2f windowPos = Window.getPosition();
@@ -84,7 +88,7 @@ public class UserInterface {
         renderMenuBar();
         ImGui.end();
 
-        renderLeftPanel(windowPos);
+        renderLeftPanel(windowPos, dt);
         renderMainPanel(windowPos);
     }
 
@@ -111,7 +115,7 @@ public class UserInterface {
      *
      * @param windowPos The current position of the window
      */
-    private void renderLeftPanel(Vector2f windowPos) {
+    private void renderLeftPanel(Vector2f windowPos, float dt) {
 
         ImGui.setNextWindowPos(windowPos.x, windowPos.y + menuBarHeight);
         ImGui.setNextWindowSize(currentLPWidth, Window.getHeight() - menuBarHeight);
@@ -121,22 +125,23 @@ public class UserInterface {
 
         ImGui.begin("##leftPanel", MAIN_VIEW_FLAGS);
 
-        for (ImageSelectable option : leftPanelOptions) {
+        for (ImageButton option : leftPanelOptions) {
             if (option != null) {
                 if (option.render(option.getCode() == currentView, collapsedLP)) currentView = (MainView) option.getCode();
             }
         }
 
-        ImGui.setCursorPos(ImGui.getWindowSizeX() - 48 - ImGui.getStyle().getFramePaddingX(),
-                ImGui.getWindowSizeY() - 48 - ImGui.getStyle().getFramePaddingY());
+        ImGui.setCursorPos(ImGui.getWindowSizeX() - LEFT_PANEL_ICON_SIZE - ImGui.getStyle().getFramePaddingX(),
+                ImGui.getWindowSizeY() - LEFT_PANEL_ICON_SIZE - ImGui.getStyle().getFramePaddingY());
         Image leftArrow = (Image) Resources.icon("left_arrow");
         if (leftArrow != null && ImGui.imageButton(leftArrow.getId(), 24f, 24f)) collapsedLP = !collapsedLP;
         else if (ImGui.button(Resources.literal("collapse_panel"))) collapsedLP = !collapsedLP;
 
+        float normCurrentLPWidth = currentLPWidth / LEFT_PANEL_MAX_WIDTH;
         if (collapsedLP) {
-            if (currentLPWidth > minLPWidth) currentLPWidth -= Math.pow(currentLPWidth / LEFT_PANEL_MAX_WIDTH, 2) * 5;
+            if (currentLPWidth > minLPWidth) currentLPWidth -= Math.pow(normCurrentLPWidth, 2) / (dt * 5);
         } else if (currentLPWidth < LEFT_PANEL_MAX_WIDTH) {
-            currentLPWidth += (1 - Math.pow(currentLPWidth / LEFT_PANEL_MAX_WIDTH, 2)) * 5;
+            currentLPWidth += (1 - Math.pow(normCurrentLPWidth, 2)) / (dt * 5);
         }
 
         ImGui.end();
@@ -154,7 +159,7 @@ public class UserInterface {
         ImGui.setNextWindowSize(Window.getWidth() - currentLPWidth, Window.getHeight() - menuBarHeight);
 
         switch (currentView) {
-            case PROJECTS -> ProjectsMainView.render();
+            case PROJECTS -> projectsMainView.render();
             case ARCHIVE -> ArchiveMainView.render();
             default -> DashboardMainView.render();
         }

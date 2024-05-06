@@ -1,9 +1,12 @@
 package esp;
 
+import esp.tasks.TaskState;
+import esp.tasks.TaskStowage;
 import esp.ui.ImGuiLayer;
 import esp.ui.Window;
 import esp.utils.Resources;
 
+import static org.lwjgl.glfw.GLFW.glfwGetTime;
 import static org.lwjgl.glfw.GLFW.glfwWindowShouldClose;
 
 /**
@@ -16,11 +19,13 @@ public class Espabilarium {
     // ATTRIBUTES
     private final Window window;
     private ImGuiLayer imgui;
+    private TaskStowage stowage;
 
     // CONSTRUCTORS
     public Espabilarium() {
         this.window = Window.get();
         this.imgui = null;
+        this.stowage = new TaskStowage();
     }
 
     // METHODS
@@ -28,7 +33,7 @@ public class Espabilarium {
         // Initialize program
 
         // Init window and imgui layer
-        window.init("Espabilarium", "icon.png");
+        window.init("Espabilarium", "app.png");
         imgui = new ImGuiLayer(window.getGlfwWindow());
         imgui.init();
 
@@ -45,12 +50,19 @@ public class Espabilarium {
 
     public void run() {
         boolean running = true;
+        float bt = (float) glfwGetTime();
+        float et;
+        float dt = 0f;
         while (running) {
             window.pollEvents();
-
-            imgui.update();
-
+            if (dt >= 0) {
+                imgui.update(dt);
+            }
             window.endFrame();
+
+            et = (float) glfwGetTime();
+            dt = et - bt;
+            bt = et;
             running = !shouldClose();
         }
     }

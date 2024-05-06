@@ -6,7 +6,7 @@ import imgui.ImGui;
 import imgui.ImVec2;
 import imgui.flag.ImGuiCol;
 
-public class ImageSelectable {
+public class ImageButton {
 
     /**
      * This class is here to retain the state of a button that doesn't change at runtime to reduce load
@@ -21,7 +21,7 @@ public class ImageSelectable {
     private final Enum<?> code;                       // Enum value for whatever this selectable is supposed to select
 
     // CONSTRUCTORS
-    public ImageSelectable(Image image, String label, float sizeX, float sizeY, Enum<?> code) {
+    public ImageButton(Image image, String label, float sizeX, float sizeY, Enum<?> code) {
         this.image = image;
         this.label = label;
         this.buttonOriginX = ImGui.getCursorPosX();
@@ -31,7 +31,7 @@ public class ImageSelectable {
         this.code = code;
     }
 
-    public ImageSelectable(Image image, String label, float sizeX, float sizeY) {
+    public ImageButton(Image image, String label, float sizeX, float sizeY) {
         this.image = image;
         this.label = label;
         this.buttonOriginX = ImGui.getCursorPosX();

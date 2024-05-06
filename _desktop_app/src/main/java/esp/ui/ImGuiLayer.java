@@ -171,7 +171,7 @@ public class ImGuiLayer {
      * Renders the ui. On the first frame certain initialization operations must be made (necessary because some panels
      * and other setting may need access to ImGui, so the frame has to be started)
      */
-    public void update() {
+    public void update(float dt) {
         startFrame();
         // Initialize whatever needs to be initialized when ImGui being accessible
         if (firstFrame) {
@@ -179,7 +179,7 @@ public class ImGuiLayer {
             ui.init();
             firstFrame = false;
         }
-        ui.render(this);
+        ui.render(this, dt);
         endFrame();
     }
 
