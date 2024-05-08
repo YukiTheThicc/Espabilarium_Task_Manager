@@ -1,7 +1,8 @@
 package esp.ui;
 
-import esp.events.Event;
+import esp.api.IEvent;
 import esp.events.EventSystem;
+import esp.events.UIEvent;
 import esp.tasks.TaskQueryMaker;
 import esp.ui.views.ArchiveMainView;
 import esp.ui.views.DashboardMainView;
@@ -21,7 +22,7 @@ import java.util.ArrayList;
  *
  * @author Santiago Barreiro
  */
-public class UserInterface {
+public class UserInterface implements IEvent.Observer {
 
     public enum MainView {
         DASHBOARD,
@@ -42,7 +43,7 @@ public class UserInterface {
     private final ArrayList<ImageButton> leftPanelOptions;          // List of button options to render in the left panel
     private final EventSystem eventSystem;                          // Event system to throw GUI generated events
     private final TaskQueryMaker queryMaker;                        // Event system to throw GUI generated events
-    private  ProjectsMainView projectsMainView;                     // Projects main view object
+    private ProjectsMainView projectsMainView;                     // Projects main view object
     private MainView currentView;                                   // Current view to display in the main view section
     private boolean collapsedLP = false;                            // Flag that represents if the left panel is collapsed
 
@@ -139,7 +140,8 @@ public class UserInterface {
 
         for (ImageButton option : leftPanelOptions) {
             if (option != null) {
-                if (option.render(option.getCode() == currentView, collapsedLP)) currentView = (MainView) option.getCode();
+                if (option.render(option.getCode() == currentView, collapsedLP))
+                    currentView = (MainView) option.getCode();
             }
         }
 

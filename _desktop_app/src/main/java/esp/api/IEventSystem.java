@@ -22,5 +22,5 @@ public interface IEventSystem {
     /**
      * Handles the queued events
      */
-    void handleEvents();
+    void dispatchEvents();
 }

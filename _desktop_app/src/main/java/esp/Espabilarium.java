@@ -8,7 +8,7 @@ import esp.ui.UserInterface;
 import esp.ui.Window;
 import esp.utils.Resources;
 
-import static esp.events.Event.Type.CREATE_TASK;
+import static esp.events.UIEvent.Type.CREATE_TASK;
 import static org.lwjgl.glfw.GLFW.glfwGetTime;
 
 import static org.lwjgl.glfw.GLFW.glfwWindowShouldClose;
@@ -41,14 +41,15 @@ public class Espabilarium {
 
         // Init window and imgui layer
         window.init("Espabilarium", "app.png");
-        imgui = new ImGuiLayer(window.getGlfwWindow(), new UserInterface(eventSystem, queryMaker));
+        UserInterface ui = new UserInterface(eventSystem, queryMaker);
+        imgui = new ImGuiLayer(window.getGlfwWindow(), ui);
         imgui.init();
 
         // Connect the query maker to the stowage instance
         queryMaker.connectStowage(stowage);
 
         // Add observers to the event system
-        eventSystem.addObserver(stowage, new Enum[]{CREATE_TASK});
+        eventSystem.addObserver(ui, new Enum[]{CREATE_TASK});
 
         // Initialize the resource pool and styles
         Resources.init("file");
@@ -70,7 +71,7 @@ public class Espabilarium {
         while (running) {
 
             window.pollEvents();
-            eventSystem.handleEvents();
+            eventSystem.dispatchEvents();
 
             if (dt >= 0) {
                 imgui.update(dt);

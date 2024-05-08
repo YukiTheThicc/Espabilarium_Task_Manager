@@ -39,15 +39,17 @@ public class EventSystem implements IEventSystem {
         }
     }
 
-    public void handleEvents() {
+    public void dispatchEvents() {
         int handleIterations;
         for (IEvent event : eventStack) {
             handleIterations = 0;
             ArrayList<IEvent.Observer> typeObservers = observers.get(event.getEventType());
-            for (IEvent.Observer observer : typeObservers) {
-                if (event.getHandleIterations() == handleIterations) break;
-                observer.handleEvent(event);
-                handleIterations ++;
+            if (typeObservers != null) {
+                for (IEvent.Observer observer : typeObservers) {
+                    if (event.getHandleIterations() == handleIterations) break;
+                    observer.handleEvent(event);
+                    handleIterations++;
+                }
             }
         }
         eventStack.clear();

@@ -15,7 +15,7 @@ import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.HashMap;
 
-import static esp.events.Event.Type.CREATE_TASK;
+import static esp.events.UIEvent.Type.CREATE_TASK;
 
 /**
  * TaskStowage

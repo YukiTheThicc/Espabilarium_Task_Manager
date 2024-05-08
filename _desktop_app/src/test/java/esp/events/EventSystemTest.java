@@ -76,7 +76,7 @@ class EventSystemTest {
         sut.throwEvent(new TestEvent(TestType.TYPE2, 2));
         sut.throwEvent(new TestEvent(TestType.TYPE2, 1));
 
-        sut.handleEvents();
+        sut.dispatchEvents();
 
         assertAll(
                 () -> assertEquals(1, obs1.handleCount),

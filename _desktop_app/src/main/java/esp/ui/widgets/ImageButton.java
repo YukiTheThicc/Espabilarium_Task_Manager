@@ -16,32 +16,51 @@ public class ImageButton {
     private final String label;
     private final float imageSizeX;
     private final float imageSizeY;
-    private float buttonOriginX;
-    private float buttonOriginY;
+    private final float width;
     private final Enum<?> code;                       // Enum value for whatever this selectable is supposed to select
 
     // CONSTRUCTORS
+    public ImageButton(Image image, String label, float sizeX, float sizeY, float width, Enum<?> code) {
+        this.image = image;
+        this.label = label;
+        this.imageSizeX = sizeX;
+        this.imageSizeY = sizeY;
+        this.width = width > 0 ? width : -1;
+        this.code = code;
+    }
+
     public ImageButton(Image image, String label, float sizeX, float sizeY, Enum<?> code) {
         this.image = image;
         this.label = label;
-        this.buttonOriginX = ImGui.getCursorPosX();
-        this.buttonOriginY = ImGui.getCursorPosX();
         this.imageSizeX = sizeX;
         this.imageSizeY = sizeY;
+        this.width = -1;
         this.code = code;
+    }
+
+    public ImageButton(Image image, String label, float sizeX, float sizeY, float width) {
+        this.image = image;
+        this.label = label;
+        this.imageSizeX = sizeX;
+        this.imageSizeY = sizeY;
+        this.width = width > 0 ? width : -1;
+        this.code = null;
     }
 
     public ImageButton(Image image, String label, float sizeX, float sizeY) {
         this.image = image;
         this.label = label;
-        this.buttonOriginX = ImGui.getCursorPosX();
-        this.buttonOriginY = ImGui.getCursorPosX();
         this.imageSizeX = sizeX;
         this.imageSizeY = sizeY;
+        this.width = -1;
         this.code = null;
     }
 
     // GETTERS
+    public float getWidth() {
+        return width != -1 ? width : ImGui.getContentRegionAvailX();
+    }
+
     public Enum<?> getCode() {
         return code;
     }
@@ -58,9 +77,9 @@ public class ImageButton {
 
         /* The original position of the cursor is stored so other items can be placed taking the original position of the
          * button
-        */
-        buttonOriginX = ImGui.getCursorPosX();
-        buttonOriginY = ImGui.getCursorPosY();
+         */
+        float buttonOriginX = ImGui.getCursorPosX();
+        float buttonOriginY = ImGui.getCursorPosY();
         ImVec2 padding = ImGui.getStyle().getFramePadding();
 
         // If the button is active set the color as such
@@ -69,7 +88,8 @@ public class ImageButton {
             ImGui.pushStyleColor(ImGuiCol.Button, color[0], color[1], color[2], color[3]);
         }
 
-        if (ImGui.button("##", ImGui.getContentRegionAvailX(),
+        // If width is -1 the button will occupy all available horizontal space
+        if (ImGui.button("##", width != -1 ? width : ImGui.getContentRegionAvailX(),
                 imageSizeY + padding.y * 2)) result = true;
         if (image.getId() != -1) {
             ImGui.sameLine();
@@ -79,7 +99,7 @@ public class ImageButton {
         }
 
         // Move cursor to be centered vertically for the button and apply margin taking the image into account
-        ImGui.setCursorPos(this.imageSizeX + padding.x * 8,
+        ImGui.setCursorPos(buttonOriginX + this.imageSizeX + padding.x * 4,
                 buttonOriginY + padding.y + (this.imageSizeY - ImGui.getFontSize()) / 2);
 
         if (!collapsed) ImGui.textWrapped(label);

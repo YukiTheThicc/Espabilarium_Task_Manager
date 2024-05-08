@@ -162,36 +162,23 @@ public class ImGuiUtils {
      */
     public static void align(AlignX alignX, AlignY alignY, float sizeX, float sizeY) {
 
-        ImGui.setCursorPos(0, 0);
         float x = 0f;
         float y = 0f;
         float titleBarY = ImGui.getFrameHeightWithSpacing();
-        float regionX = ImGui.getWindowSizeX();
-        float regionY = ImGui.getWindowSizeY();
+        float regionX = ImGui.getContentRegionAvailX();
+        float regionY = ImGui.getContentRegionAvailY();
 
-        switch (alignX) {
-            case LEFT:
-                x = ImGui.getStyle().getWindowPaddingX();
-                break;
-            case CENTER:
-                x = regionX / 2 - sizeX / 2;
-                break;
-            case RIGHT:
-                x = regionX - sizeX - ImGui.getStyle().getWindowPaddingX();
-                break;
-        }
+        x = switch (alignX) {
+            case LEFT -> ImGui.getCursorPosX() + ImGui.getStyle().getWindowPaddingX();
+            case CENTER -> regionX / 2 - sizeX / 2;
+            case RIGHT -> regionX - sizeX - ImGui.getStyle().getWindowPaddingX();
+        };
 
-        switch (alignY) {
-            case TOP:
-                y = titleBarY;
-                break;
-            case CENTER:
-                y = regionY / 2 - sizeY / 2;
-                break;
-            case BOTTOM:
-                y = regionY - sizeY - ImGui.getStyle().getWindowPaddingY();
-                break;
-        }
+        y = switch (alignY) {
+            case TOP -> ImGui.getCursorPosY() + titleBarY;
+            case CENTER -> regionY / 2 - sizeY / 2;
+            case BOTTOM -> regionY - sizeY - ImGui.getStyle().getWindowPaddingY();
+        };
 
         ImGui.setCursorPos(x, y);
     }
@@ -207,35 +194,22 @@ public class ImGuiUtils {
      */
     public static void alignNoHeader(AlignX alignX, AlignY alignY, float sizeX, float sizeY) {
 
-        ImGui.setCursorPos(0, 0);
         float x = 0f;
         float y = 0f;
-        float regionX = ImGui.getWindowSizeX();
-        float regionY = ImGui.getWindowSizeY();
+        float regionX = ImGui.getContentRegionAvailX();
+        float regionY = ImGui.getContentRegionAvailY();
 
-        switch (alignX) {
-            case LEFT:
-                x = ImGui.getStyle().getWindowPaddingX();
-                break;
-            case CENTER:
-                x = regionX / 2 - sizeX / 2;
-                break;
-            case RIGHT:
-                x = regionX - sizeX - ImGui.getStyle().getWindowPaddingX();
-                break;
-        }
+        x = switch (alignX) {
+            case LEFT -> ImGui.getCursorPosX() + ImGui.getStyle().getWindowPaddingX();
+            case CENTER -> regionX / 2 - sizeX / 2;
+            case RIGHT -> regionX - sizeX - ImGui.getStyle().getWindowPaddingX();
+        };
 
-        switch (alignY) {
-            case TOP:
-                y = 0;
-                break;
-            case CENTER:
-                y = regionY / 2 - sizeY / 2;
-                break;
-            case BOTTOM:
-                y = regionY - sizeY - ImGui.getStyle().getWindowPaddingY();
-                break;
-        }
+        y = switch (alignY) {
+            case TOP -> ImGui.getCursorPosY() + ImGui.getStyle().getFramePaddingY();
+            case CENTER -> regionY / 2 - sizeY / 2;
+            case BOTTOM -> regionY - sizeY - ImGui.getStyle().getWindowPaddingY();
+        };
 
         ImGui.setCursorPos(x, y);
     }

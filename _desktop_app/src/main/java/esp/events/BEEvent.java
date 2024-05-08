@@ -7,7 +7,7 @@ import esp.api.IEvent;
  *
  * @author Santiago Barreiro
  */
-public class Event implements IEvent {
+public class BEEvent implements IEvent {
 
     public enum Type {
         CREATE_TASK,
@@ -21,21 +21,21 @@ public class Event implements IEvent {
     private boolean isHandled;
 
     // CONSTRUCTORS
-    public Event(Type type) {
+    public BEEvent(Type type) {
         this.type = type;
         this.payload = null;
         this.handleIterations = 1;
         this.isHandled = false;
     }
 
-    public Event(Type type, int handleIterations) {
+    public BEEvent(Type type, int handleIterations) {
         this.type = type;
         this.payload = null;
         this.handleIterations = handleIterations;
         this.isHandled = false;
     }
 
-    public Event(Type type, int handleIterations, Object payload) {
+    public BEEvent(Type type, int handleIterations, Object payload) {
         this.type = type;
         this.payload = payload;
         this.handleIterations = handleIterations;

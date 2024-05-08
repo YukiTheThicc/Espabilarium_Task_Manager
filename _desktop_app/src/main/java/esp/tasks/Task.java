@@ -5,6 +5,7 @@ import esp.exceptions.EspRuntimeException;
 import esp.utils.EspUUID;
 import esp.utils.Resources;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 
 /**
@@ -97,6 +98,14 @@ public class Task implements ITask {
 
     public void setPriority(TaskPriority priority) {
         this.priority = priority;
+    }
+
+    public Object getField(Field field) {
+        try {
+            return field.get(this);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     // METHODS
