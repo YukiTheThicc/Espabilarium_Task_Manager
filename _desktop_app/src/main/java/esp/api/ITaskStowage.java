@@ -1,6 +1,6 @@
 package esp.api;
 
-import esp.tasks.Task;
+import java.util.Collection;
 
 /**
  * ITaskStowage
@@ -10,8 +10,8 @@ import esp.tasks.Task;
 public interface ITaskStowage {
 
     /**
-     * Stows the passed task into the
-     * @param task
+     * Stows the passed task into the data structure
+     * @param task Task to be stowed
      */
     void stowTask(ITask task);
 
@@ -22,9 +22,37 @@ public interface ITaskStowage {
      */
     void nestTask(ITask parent, ITask Child);
 
+    /**
+     * Fetches a single Task by directly fetching it through its ID
+     * @param taskID UUID of the desired Task
+     * @return The desired Task or null if not found
+     */
     ITask getTask(String taskID);
 
-    void saveTask(ITask task, String path);
+    /**
+     * Saves the specified Task on disk within the specified directory. The files name will be the same as the ID of the Task
+     * @param task The Task to be saved
+     * @param dir The directory to save the Task in. Can be relative
+     */
+    void saveTask(ITask task, String dir);
 
-    ITask loadTask(String path, String uuid);
+    /**
+     * Loads one Task from a directory
+     * @param dir Directory from which to load the file from
+     * @param uuid UUID (name of the file) for the loaded Task
+     * @return The loaded Task or null if something went wrong
+     */
+    ITask loadTask(String dir, String uuid);
+
+    public interface QueryMaker {
+
+        public enum Order {
+            ASCENDENT,
+            DESCENDANT
+        }
+
+        void connectStowage(ITaskStowage stowage);
+
+        Collection<ITask> queryTasks(String field, Order order);
+    }
 }

@@ -35,4 +35,24 @@ public interface IEvent {
      * Sets the event as handled
      */
     void setHandled();
+
+    public interface Observer {
+
+        /**
+         * Method to be executed when notified of an event
+         * @param event Notified IEvent instance
+         */
+        void handleEvent(IEvent event);
+    }
+
+    public interface Thrower {
+
+        void connectSystem(IEventSystem system);
+
+        /**
+         * Method to be executed when notified of an event
+         * @param event Notified IEvent instance
+         */
+        void throwEvent(IEvent event);
+    }
 }

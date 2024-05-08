@@ -21,6 +21,20 @@ public class Event implements IEvent {
     private boolean isHandled;
 
     // CONSTRUCTORS
+    public Event(Type type) {
+        this.type = type;
+        this.payload = null;
+        this.handleIterations = 1;
+        this.isHandled = false;
+    }
+
+    public Event(Type type, int handleIterations) {
+        this.type = type;
+        this.payload = null;
+        this.handleIterations = handleIterations;
+        this.isHandled = false;
+    }
+
     public Event(Type type, int handleIterations, Object payload) {
         this.type = type;
         this.payload = payload;
@@ -30,7 +44,7 @@ public class Event implements IEvent {
 
     // GETTERS & SETTERS
     @Override
-    public Enum<?> getEventType() {
+    public Type getEventType() {
         return type;
     }
 

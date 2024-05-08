@@ -1,7 +1,7 @@
 package esp.events;
 
 import esp.api.IEvent;
-import esp.api.IObserver;
+import esp.api.IEventSystem;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,11 +11,11 @@ import java.util.HashMap;
  *
  * @author Santiago Barreiro
  */
-public class EventSystem {
+public class EventSystem implements IEventSystem {
 
     // ATTRIBUTES
     private final ArrayList<IEvent> eventStack;
-    private final HashMap<Enum<?>, ArrayList<IObserver>> observers;
+    private final HashMap<Enum<?>, ArrayList<IEvent.Observer>> observers;
 
     // CONSTRUCTORS
     public EventSystem() {
@@ -24,7 +24,7 @@ public class EventSystem {
     }
 
     // METHODS
-    public void addObserver(IObserver observer, Enum<?>[] subscriptions) {
+    public void addObserver(IEvent.Observer observer, Enum<?>[] subscriptions) {
         if (observer != null) {
             for (Enum<?> subscription : subscriptions) {
                 observers.computeIfAbsent(subscription, k -> new ArrayList<>());
@@ -43,12 +43,13 @@ public class EventSystem {
         int handleIterations;
         for (IEvent event : eventStack) {
             handleIterations = 0;
-            ArrayList<IObserver> typeObservers = observers.get(event.getEventType());
-            for (IObserver observer : typeObservers) {
+            ArrayList<IEvent.Observer> typeObservers = observers.get(event.getEventType());
+            for (IEvent.Observer observer : typeObservers) {
                 if (event.getHandleIterations() == handleIterations) break;
                 observer.handleEvent(event);
                 handleIterations ++;
             }
         }
+        eventStack.clear();
     }
 }

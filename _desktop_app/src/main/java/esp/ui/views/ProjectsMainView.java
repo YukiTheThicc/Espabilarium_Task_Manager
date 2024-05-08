@@ -1,6 +1,10 @@
 package esp.ui.views;
 
 import esp.api.ITask;
+import esp.api.ITaskStowage;
+import esp.events.Event;
+import esp.events.EventSystem;
+import esp.tasks.TaskQueryMaker;
 import esp.ui.AlignX;
 import esp.ui.AlignY;
 import esp.ui.Image;
@@ -20,7 +24,7 @@ import java.util.HashMap;
  *
  * @author: Santiago Barreiro
  */
-public class ProjectsMainView {
+public class ProjectsMainView extends View {
 
     // CONSTANTS
     private static final int TAB_BAR_FLAGS = ImGuiTabBarFlags.NoCloseWithMiddleMouseButton;
@@ -29,12 +33,16 @@ public class ProjectsMainView {
 
     // ATTRIBUTES
     private final ImageButton createTaskButton;
+    private final TaskQueryMaker queryMaker;
     private final HashMap<String, Boolean> fieldFilter;
     private final ArrayList<ITask> tasks;
 
     // CONSTRUCTORS
-    public ProjectsMainView() {
+    public ProjectsMainView(EventSystem es, TaskQueryMaker queryMaker) {
+        super(es);
         this.createTaskButton = new ImageButton((Image) Resources.icon("create.png"), Resources.literal("create_new_task"), 24f, 24f);
+        this.queryMaker = queryMaker;
+
         this.fieldFilter = new HashMap<>();
         this.tasks = new ArrayList<>();
         fieldFilter.put("progress", false);
@@ -53,6 +61,11 @@ public class ProjectsMainView {
         }
     }
 
+    private void updateList() {
+        tasks.clear();
+        tasks.addAll(queryMaker.queryTasks("name", ITaskStowage.QueryMaker.Order.DESCENDANT));
+    }
+
     private void renderOverview() {
         if (ImGui.beginTabItem(Resources.literal("overview"))) {
 
@@ -65,7 +78,10 @@ public class ProjectsMainView {
             }
 
             //ImGui.setCursorPosX(ImGui.getWindowPosX());
-            createTaskButton.render(false);
+            if (createTaskButton.render(false)) {
+                this.getEventSystem().throwEvent(new Event(Event.Type.CREATE_TASK));
+                this.updateList();
+            }
 
 
             if (ImGui.beginChild("##")) {

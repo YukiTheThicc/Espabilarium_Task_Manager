@@ -1,7 +1,6 @@
 package esp.events;
 
 import esp.api.IEvent;
-import esp.api.IObserver;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -50,7 +49,7 @@ class EventSystemTest {
         }
     }
 
-    static class TestObserver implements IObserver {
+    static class TestObserver implements IEvent.Observer {
 
         public int handleCount = 0;
 

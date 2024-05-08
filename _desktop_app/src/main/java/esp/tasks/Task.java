@@ -2,6 +2,8 @@ package esp.tasks;
 
 import esp.api.ITask;
 import esp.exceptions.EspRuntimeException;
+import esp.utils.EspUUID;
+import esp.utils.Resources;
 
 import java.util.ArrayList;
 
@@ -11,6 +13,12 @@ import java.util.ArrayList;
  * @author Santiago Barreiro
  */
 public class Task implements ITask {
+
+    public static class TaskFactory {
+        public static Task createTask() {
+            return new Task(EspUUID.generateUUID(), Resources.literal("new_task"), TaskType.TASK, TaskPriority.LOWEST);
+        }
+    }
 
     // ATTRIBUTES
     private final String uuid;

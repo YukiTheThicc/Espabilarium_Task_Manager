@@ -34,9 +34,9 @@ public class ImGuiLayer {
     private boolean firstFrame = true;
 
     // CONSTRUCTORS
-    public ImGuiLayer(long windowPtr) {
+    public ImGuiLayer(long windowPtr, UserInterface ui) {
         this.glfwWindow = windowPtr;
-        this.ui = new UserInterface();
+        this.ui = ui;
     }
 
     // METHODS
@@ -142,7 +142,7 @@ public class ImGuiLayer {
                 imgui.internal.ImGui.getIO().setFontDefault(font);
             }
         } else {
-            EspLogger.log("Failed to load any font files from Sapphire fonts dir");
+            EspLogger.log("Failed to load any font files from fonts dir");
         }
     }
 
@@ -173,13 +173,13 @@ public class ImGuiLayer {
      */
     public void update(float dt) {
         startFrame();
-        // Initialize whatever needs to be initialized when ImGui being accessible
+        // Initialize whatever needs to be initialized when ImGui is accessible
         if (firstFrame) {
             EspStyles.setEspStyles(ImGui.getFontSize());
             ui.init();
             firstFrame = false;
         }
-        ui.render(this, dt);
+        ui.render(dt);
         endFrame();
     }
 

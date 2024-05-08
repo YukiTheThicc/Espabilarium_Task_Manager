@@ -2,6 +2,7 @@ package esp.tasks;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import esp.api.IEvent;
 import esp.api.ITask;
 import esp.api.ITaskStowage;
 import esp.exceptions.EspRuntimeException;
@@ -11,14 +12,17 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Collection;
 import java.util.HashMap;
+
+import static esp.events.Event.Type.CREATE_TASK;
 
 /**
  * TaskStowage
  *
  * @author Santiago Barreiro
  */
-public class TaskStowage implements ITaskStowage {
+public class TaskStowage implements ITaskStowage, IEvent.Observer {
 
     // CONSTANTS
     private static final String DEFAULT_DATA_FOLDER = "\\data";
@@ -32,7 +36,9 @@ public class TaskStowage implements ITaskStowage {
     }
 
     // GETTERS & SETTERS
-
+    public Collection<ITask> getTasks() {
+        return tasks.values();
+    }
 
     // METHODS
     public void stowTask(ITask newTask) {
@@ -69,10 +75,11 @@ public class TaskStowage implements ITaskStowage {
                 .create();
         try {
             File yourFile = new File(dataPath + task.getUuid() + ".json");
-            yourFile.createNewFile();
-            FileWriter writer = new FileWriter(yourFile.getAbsoluteFile());
-            writer.write(gson.toJson(task));
-            writer.close();
+            if (yourFile.createNewFile()) {
+                FileWriter writer = new FileWriter(yourFile.getAbsoluteFile());
+                writer.write(gson.toJson(task));
+                writer.close();
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -95,5 +102,13 @@ public class TaskStowage implements ITaskStowage {
             return null;
         }
         return loaded;
+    }
+
+    @Override
+    public void handleEvent(IEvent event) {
+        if (event.getEventType().equals(CREATE_TASK)) {
+            System.out.println("Created task");
+            stowTask(Task.TaskFactory.createTask());
+        }
     }
 }
