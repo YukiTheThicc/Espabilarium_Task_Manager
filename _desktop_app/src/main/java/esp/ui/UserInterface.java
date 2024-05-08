@@ -5,6 +5,7 @@ import esp.ui.views.DashboardMainView;
 import esp.ui.views.ProjectsMainView;
 import esp.ui.widgets.ImageButton;
 import esp.utils.Resources;
+
 import imgui.ImGui;
 import imgui.ImVec2;
 import imgui.flag.*;
@@ -29,6 +30,7 @@ public class UserInterface {
     public static final int MAIN_VIEW_FLAGS = ImGuiWindowFlags.NoDocking | ImGuiWindowFlags.NoTitleBar |
             ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoMove |
             ImGuiWindowFlags.NoBringToFrontOnFocus | ImGuiWindowFlags.NoNavFocus | ImGuiWindowFlags.NoScrollbar;
+
     private static final int MENU_BAR_PADDING = 24;         // Menu bar padding
     private static final int MENU_BAR_OFFSET = 72;          // Menu bar offset (to place an image before the menu items)
     private static final int LEFT_PANEL_MAX_WIDTH = 266;    // Static width fot the left panel

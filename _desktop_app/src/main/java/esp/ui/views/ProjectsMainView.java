@@ -1,7 +1,6 @@
 package esp.ui.views;
 
 import esp.api.ITask;
-import esp.api.ITaskStowage;
 import esp.ui.AlignX;
 import esp.ui.AlignY;
 import esp.ui.Image;
