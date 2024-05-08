@@ -8,6 +8,12 @@ package esp.api;
 public interface IEvent {
 
     /**
+     * Returns how many times the event can be handled.
+     * @return Enum value fot the tpe
+     */
+    int getHandleIterations();
+
+    /**
      * Returns an Enum value defining the type of one event
      * @return Enum value fot the tpe
      */
