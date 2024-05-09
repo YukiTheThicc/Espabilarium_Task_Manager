@@ -20,9 +20,9 @@ public class EspStyles {
     
     public static void setEspStyles(int fontSize) {
 
-        BIG_ICON_SIZE = fontSize * 2.5f;
-        MEDIUM_ICON_SIZE = fontSize * 2f;
-        SMALL_ICON_SIZE = fontSize * 1.5f;
+        BIG_ICON_SIZE = 48f;
+        MEDIUM_ICON_SIZE = 32f;
+        SMALL_ICON_SIZE = 24f;
         BIG_COLUMN_SIZE = fontSize * 30;
         MEDIUM_COLUMN_SIZE = fontSize * 20;
         SMALL_COLUMN_SIZE = fontSize * 10;

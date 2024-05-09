@@ -8,7 +8,6 @@ import esp.ui.UserInterface;
 import esp.ui.Window;
 import esp.utils.Resources;
 
-import static esp.events.UIEvent.Type.CREATE_TASK;
 import static org.lwjgl.glfw.GLFW.glfwGetTime;
 
 import static org.lwjgl.glfw.GLFW.glfwWindowShouldClose;
@@ -47,9 +46,6 @@ public class Espabilarium {
 
         // Connect the query maker to the stowage instance
         queryMaker.connectStowage(stowage);
-
-        // Add observers to the event system
-        eventSystem.addObserver(ui, new Enum[]{CREATE_TASK});
 
         // Initialize the resource pool and styles
         Resources.init("file");

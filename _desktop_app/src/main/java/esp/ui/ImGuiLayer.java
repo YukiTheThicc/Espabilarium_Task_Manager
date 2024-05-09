@@ -31,12 +31,28 @@ public class ImGuiLayer {
     private final ImGuiImplGl3 imGuiGl3 = new ImGuiImplGl3();
     private final ImGuiImplGlfw imGuiGlfw = new ImGuiImplGlfw();
     private final UserInterface ui;
+    private ImFont normalFont;
+    private ImFont bigFont;
+    private ImFont smallFont;
     private boolean firstFrame = true;
 
     // CONSTRUCTORS
     public ImGuiLayer(long windowPtr, UserInterface ui) {
         this.glfwWindow = windowPtr;
         this.ui = ui;
+    }
+
+    // GETTERS
+    public ImFont getNormalFont() {
+        return normalFont;
+    }
+
+    public ImFont getBigFont() {
+        return bigFont;
+    }
+
+    public ImFont getSmallFont() {
+        return smallFont;
     }
 
     // METHODS
@@ -138,8 +154,10 @@ public class ImGuiLayer {
             fontConfig.setGlyphRanges(fontAtlas.getGlyphRangesDefault());
             fontConfig.setPixelSnapH(true);
             for (File file : fontFiles) {
-                ImFont font = fontAtlas.addFontFromFileTTF(file.getAbsolutePath(), 16f, fontConfig);
-                imgui.internal.ImGui.getIO().setFontDefault(font);
+                this.normalFont = fontAtlas.addFontFromFileTTF(file.getAbsolutePath(), 16f, fontConfig);
+                this.bigFont = fontAtlas.addFontFromFileTTF(file.getAbsolutePath(), 24f, fontConfig);
+                this.smallFont = fontAtlas.addFontFromFileTTF(file.getAbsolutePath(), 12f, fontConfig);
+                imgui.internal.ImGui.getIO().setFontDefault(normalFont);
             }
         } else {
             EspLogger.log("Failed to load any font files from fonts dir");
@@ -176,7 +194,7 @@ public class ImGuiLayer {
         // Initialize whatever needs to be initialized when ImGui is accessible
         if (firstFrame) {
             EspStyles.setEspStyles(ImGui.getFontSize());
-            ui.init();
+            ui.init(this);
             firstFrame = false;
         }
         ui.render(dt);

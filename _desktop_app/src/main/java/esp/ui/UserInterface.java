@@ -22,7 +22,7 @@ import java.util.ArrayList;
  *
  * @author Santiago Barreiro
  */
-public class UserInterface implements IEvent.Observer {
+public class UserInterface {
 
     public enum MainView {
         DASHBOARD,
@@ -67,7 +67,7 @@ public class UserInterface implements IEvent.Observer {
     /**
      * Initializes the User interface elements
      */
-    public void init() {
+    public void init(ImGuiLayer layer) {
 
         ImVec2 framePadding = ImGui.getStyle().getFramePadding();
         this.minLPWidth = LEFT_PANEL_ICON_SIZE.x + ImGui.getStyle().getFramePaddingX() * 6;
@@ -77,7 +77,7 @@ public class UserInterface implements IEvent.Observer {
         this.currentView = MainView.DASHBOARD;
 
         // Create views
-        this.projectsMainView = new ProjectsMainView(eventSystem, queryMaker);
+        this.projectsMainView = new ProjectsMainView(layer, eventSystem, queryMaker);
 
         // Create left panel buttons
         leftPanelOptions.add(new ImageButton((Image) Resources.icon("dashboard.png"), Resources.literal("dashboard"),

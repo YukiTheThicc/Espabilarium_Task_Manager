@@ -8,6 +8,7 @@ import esp.tasks.Task;
 import esp.tasks.TaskQueryMaker;
 import esp.ui.*;
 import esp.ui.widgets.ImageButton;
+import esp.utils.EspStyles;
 import esp.utils.ImGuiUtils;
 import esp.utils.Resources;
 import imgui.ImGui;
@@ -25,7 +26,7 @@ import java.util.HashMap;
 public class ProjectsMainView extends View {
 
     // CONSTANTS
-    private static final int TAB_BAR_FLAGS = ImGuiTabBarFlags.NoCloseWithMiddleMouseButton;
+    private static final int TAB_BAR_FLAGS = ImGuiTabBarFlags.AutoSelectNewTabs;
     private static final int COLUMN_FILTER_FLAGS = ImGuiComboFlags.HeightLargest | ImGuiComboFlags.PopupAlignLeft
             | ImGuiComboFlags.NoArrowButton;
     private static final int TABLE_FLAGS = ImGuiTableFlags.Sortable;
@@ -36,17 +37,22 @@ public class ProjectsMainView extends View {
     private final ArrayList<Field> activeFields;
     private final HashMap<Field, Boolean> fieldFilter;
     private final ArrayList<ITask> tasks;
+    private final ArrayList<TaskEditionView> tasksViews;
+    private final ArrayList<TaskEditionView> tasksViewsToClose;
+    private boolean isDirty;
 
     // CONSTRUCTORS
-    public ProjectsMainView(EventSystem es, TaskQueryMaker queryMaker) {
-        super(es);
-        float buttonWidth = ImGuiUtils.textSize(Resources.literal("create_new_task")) + 24f + ImGui.getStyle().getFramePaddingX() * 6;
+    public ProjectsMainView(ImGuiLayer layer, EventSystem es, TaskQueryMaker queryMaker) {
+        super(layer, es);
+        float buttonWidth = ImGuiUtils.textSize(Resources.literal("create_new_task")) + EspStyles.SMALL_ICON_SIZE + ImGui.getStyle().getFramePaddingX() * 6;
         this.createTaskButton = new ImageButton((Image) Resources.icon("create.png"), Resources.literal("create_new_task"),
-                24f, 24f, buttonWidth);
+                EspStyles.SMALL_ICON_SIZE, EspStyles.SMALL_ICON_SIZE, buttonWidth);
         this.queryMaker = queryMaker;
         this.activeFields = new ArrayList<>();
         this.fieldFilter = new HashMap<>();
         this.tasks = new ArrayList<>();
+        this.tasksViews = new ArrayList<>();
+        this.tasksViewsToClose = new ArrayList<>();
 
         for (Field field : Task.class.getDeclaredFields()) {
             if (!field.getName().equals("uuid") && !field.getName().equals("name") && !field.getName().equals("children")
@@ -60,14 +66,24 @@ public class ProjectsMainView extends View {
     public void render() {
         if (ImGui.begin("##projects", UserInterface.MAIN_VIEW_FLAGS)) {
 
-            ImGuiUtils.alignNoHeader(AlignX.CENTER, AlignY.TOP, createTaskButton.getWidth(), 24f);
+            ImGuiUtils.alignNoHeader(AlignX.CENTER, AlignY.TOP, createTaskButton.getWidth(), EspStyles.SMALL_ICON_SIZE);
             if (createTaskButton.render(false)) {
-                this.getEventSystem().throwEvent(new UIEvent(UIEvent.Type.CREATE_TASK));
-                this.updateList();
+                this.tasksViews.add(new TaskEditionView(getLayer(), getEventSystem(), Task.TaskFactory.createTask(), true));
             }
 
             if (ImGui.beginTabBar("projectsTabBar", TAB_BAR_FLAGS)) {
                 renderOverview();
+                for (TaskEditionView view : tasksViews) {
+                    view.render();
+                    if (view.shouldClose()) {
+                        isDirty = true;
+                        tasksViewsToClose.add(view);
+                    }
+                }
+                if (isDirty) {
+                    for (TaskEditionView view : tasksViewsToClose) tasksViews.remove(view);
+                    tasksViewsToClose.clear();
+                }
                 ImGui.endTabBar();
             }
             ImGui.end();

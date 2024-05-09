@@ -170,14 +170,14 @@ public class ImGuiUtils {
 
         x = switch (alignX) {
             case LEFT -> ImGui.getCursorPosX() + ImGui.getStyle().getWindowPaddingX();
-            case CENTER -> regionX / 2 - sizeX / 2;
-            case RIGHT -> regionX - sizeX - ImGui.getStyle().getWindowPaddingX();
+            case CENTER -> ImGui.getCursorPosX() + (regionX / 2 - sizeX / 2);
+            case RIGHT -> ImGui.getCursorPosX() + (regionX - sizeX - ImGui.getStyle().getWindowPaddingX());
         };
 
         y = switch (alignY) {
             case TOP -> ImGui.getCursorPosY() + titleBarY;
-            case CENTER -> regionY / 2 - sizeY / 2;
-            case BOTTOM -> regionY - sizeY - ImGui.getStyle().getWindowPaddingY();
+            case CENTER -> ImGui.getCursorPosY() + regionY / 2 - sizeY / 2;
+            case BOTTOM -> ImGui.getCursorPosY() + regionY - sizeY - ImGui.getStyle().getWindowPaddingY();
         };
 
         ImGui.setCursorPos(x, y);
