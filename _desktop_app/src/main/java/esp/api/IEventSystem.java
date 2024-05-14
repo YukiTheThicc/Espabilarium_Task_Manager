@@ -8,11 +8,19 @@ package esp.api;
 public interface IEventSystem {
 
     /**
-     * Registers an observer in this system
+     * Registers an observer in this system. If the list is null it is considered to be an all listening observer
      * @param newObserver New observer to be registered
      * @param subscriptions List of enum values which the observer will be notified of
      */
-     void addObserver(IEvent.Observer newObserver, Enum<?>[] subscriptions);
+     void attachObserver(Enum<?>[] subscriptions, IEvent.Observer newObserver);
+
+    /**
+     * Removes the observer from the specified subscriptions. If the list is null the observer should be detached from
+     * all subscriptions
+     * @param toDetach The observer to detach
+     * @param subscriptions List of subscriptions to be detached from. If null all subscriptions will be detached
+     */
+     void detachObserver(Enum<?>[] subscriptions, IEvent.Observer toDetach);
 
     /**
      * Throws a new event into the event stack of this system

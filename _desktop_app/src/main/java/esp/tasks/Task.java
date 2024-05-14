@@ -108,20 +108,35 @@ public class Task implements ITask {
         }
     }
 
-    // METHODS
     public ArrayList<ITask> getChildren() {
         return this.children;
     }
 
+    // METHODS
+
     public void addChild(ITask newChild) {
         if (newChild == null) throw new EspRuntimeException("Tried to add null child");
-        if (children.contains(newChild)) throw new EspRuntimeException("Tried to add a child with an already existing UUID");
-        if (newChild.getUuid().equals(this.uuid)) throw new EspRuntimeException("Tried to set task as children of itself");
+        if (children.contains(newChild))
+            throw new EspRuntimeException("Tried to add a child with an already existing UUID");
+        if (newChild.getUuid().equals(this.uuid))
+            throw new EspRuntimeException("Tried to set task as children of itself");
         this.children.add(newChild);
     }
 
     public void removeChild(ITask toRemove) {
         children.remove(toRemove);
+    }
+
+    public ITask copy(String uuid) {
+        ITask copied = new Task(uuid, this.name, this.type, this.priority);
+        copied.setProgress(this.getProgress());
+        copied.setType(this.getType());
+        copied.setState(this.getState());
+        copied.setParent(this.getParent());
+        for (ITask child : this.getChildren()) {
+            copied.addChild(child);
+        }
+        return copied;
     }
 
     @Override

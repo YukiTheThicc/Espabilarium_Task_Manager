@@ -2,6 +2,7 @@ package esp.tasks;
 
 import esp.api.ITask;
 import esp.api.ITaskStowage;
+import esp.events.EventSystem;
 import esp.exceptions.EspRuntimeException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,7 +22,7 @@ class TaskStowageTest {
 
     @BeforeEach
     void setUp() {
-        sut = new TaskStowage();
+        sut = new TaskStowage(new EventSystem());
     }
 
     @Test

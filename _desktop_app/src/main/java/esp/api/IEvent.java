@@ -25,34 +25,12 @@ public interface IEvent {
      */
     Object getPayload();
 
-    /**
-     * Returns if the event has been handled
-     * @return True if the event has been already handled, false otherwise
-     */
-    boolean isHandled();
-
-    /**
-     * Sets the event as handled
-     */
-    void setHandled();
-
-    public interface Observer {
+    interface Observer {
 
         /**
          * Method to be executed when notified of an event
          * @param event Notified IEvent instance
          */
         void handleEvent(IEvent event);
-    }
-
-    public interface Thrower {
-
-        void connectSystem(IEventSystem system);
-
-        /**
-         * Method to be executed when notified of an event
-         * @param event Notified IEvent instance
-         */
-        void throwEvent(IEvent event);
     }
 }

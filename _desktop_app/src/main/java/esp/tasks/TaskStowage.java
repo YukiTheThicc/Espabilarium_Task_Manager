@@ -5,6 +5,8 @@ import com.google.gson.GsonBuilder;
 import esp.api.IEvent;
 import esp.api.ITask;
 import esp.api.ITaskStowage;
+import esp.events.BEEvent;
+import esp.events.EventSystem;
 import esp.exceptions.EspRuntimeException;
 
 import java.io.File;
@@ -15,24 +17,27 @@ import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.HashMap;
 
-import static esp.events.UIEvent.Type.CREATE_TASK;
+import static esp.events.UIEvent.Type.SAVE_TASK;
 
 /**
  * TaskStowage
  *
  * @author Santiago Barreiro
  */
-public class TaskStowage implements ITaskStowage, IEvent.Observer {
+public class TaskStowage implements ITaskStowage {
 
     // CONSTANTS
-    private static final String DEFAULT_DATA_FOLDER = "\\data";
+    private static final String DEFAULT_DATA_FOLDER = System.getProperty("user.dir") + "\\data\\";
+    private static final int DEFAULT_THREADS = 4;
 
     // ATTRIBUTES
     private final HashMap<String, ITask> tasks;
+    private final EventSystem es;
 
     // CONSTRUCTORS
-    public TaskStowage() {
+    public TaskStowage(EventSystem es) {
         this.tasks = new HashMap<>();
+        this.es = es;
     }
 
     // GETTERS & SETTERS
@@ -42,10 +47,18 @@ public class TaskStowage implements ITaskStowage, IEvent.Observer {
 
     // METHODS
     public void stowTask(ITask newTask) {
-        if (newTask == null) throw new EspRuntimeException("Tried to add a null task");
+        if (newTask == null) throw new EspRuntimeException("Tried to add null task");
         if (tasks.get(newTask.getUuid()) != null)
             throw new EspRuntimeException("Tried to insert a Task with an already existing UUID");
         tasks.put(newTask.getUuid(), newTask);
+        saveTask(newTask, DEFAULT_DATA_FOLDER);
+    }
+
+    public void updateTask(ITask updatedTask) {
+        if (updatedTask == null) throw new EspRuntimeException("Tried to update null task");
+        if (tasks.get(updatedTask.getUuid()) == null)
+            throw new EspRuntimeException("Tried to update a non registered task");
+        saveTask(updatedTask, DEFAULT_DATA_FOLDER);
     }
 
     public void nestTask(ITask parent, ITask child) {
@@ -74,11 +87,12 @@ public class TaskStowage implements ITaskStowage, IEvent.Observer {
                 .enableComplexMapKeySerialization()
                 .create();
         try {
-            File yourFile = new File(dataPath + task.getUuid() + ".json");
-            if (yourFile.createNewFile()) {
-                FileWriter writer = new FileWriter(yourFile.getAbsoluteFile());
+            File targetFile = new File(dataPath + task.getUuid() + ".json");
+            if (targetFile.createNewFile()) {
+                FileWriter writer = new FileWriter(targetFile.getAbsoluteFile());
                 writer.write(gson.toJson(task));
                 writer.close();
+                es.throwEvent(new BEEvent(BEEvent.Type.SAVED_TASK, task.getUuid()));
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -102,13 +116,5 @@ public class TaskStowage implements ITaskStowage, IEvent.Observer {
             return null;
         }
         return loaded;
-    }
-
-    @Override
-    public void handleEvent(IEvent event) {
-        if (event.getEventType().equals(CREATE_TASK)) {
-            System.out.println("Created task");
-            stowTask(Task.TaskFactory.createTask());
-        }
     }
 }

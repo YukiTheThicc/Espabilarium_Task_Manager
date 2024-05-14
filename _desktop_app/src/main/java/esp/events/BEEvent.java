@@ -3,43 +3,29 @@ package esp.events;
 import esp.api.IEvent;
 
 /**
- * Event
+ * BEEvent
  *
  * @author Santiago Barreiro
  */
-public class BEEvent implements IEvent {
+public record BEEvent(Type type, Object payload, int handleIterations) implements IEvent {
 
     public enum Type {
-        CREATE_TASK,
-        USER_EVENT
+        CREATED_TASK,
+        SAVED_TASK,
+        REMOVED_TASK
     }
-
-    // ATTRIBUTES
-    private final Type type;
-    private final Object payload;
-    private final int handleIterations;
-    private boolean isHandled;
 
     // CONSTRUCTORS
     public BEEvent(Type type) {
-        this.type = type;
-        this.payload = null;
-        this.handleIterations = 1;
-        this.isHandled = false;
+        this(type, null, -1);
     }
 
     public BEEvent(Type type, int handleIterations) {
-        this.type = type;
-        this.payload = null;
-        this.handleIterations = handleIterations;
-        this.isHandled = false;
+        this(type, null, handleIterations);
     }
 
-    public BEEvent(Type type, int handleIterations, Object payload) {
-        this.type = type;
-        this.payload = payload;
-        this.handleIterations = handleIterations;
-        this.isHandled = false;
+    public BEEvent(Type type, Object payload) {
+        this(type, payload, -1);
     }
 
     // GETTERS & SETTERS
@@ -56,15 +42,5 @@ public class BEEvent implements IEvent {
     @Override
     public Object getPayload() {
         return payload;
-    }
-
-    @Override
-    public boolean isHandled() {
-        return isHandled;
-    }
-
-    @Override
-    public void setHandled() {
-        this.isHandled = true;
     }
 }

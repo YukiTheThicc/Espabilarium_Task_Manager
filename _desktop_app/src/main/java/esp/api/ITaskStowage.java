@@ -22,6 +22,8 @@ public interface ITaskStowage {
      */
     void nestTask(ITask parent, ITask Child);
 
+    void updateTask(ITask updatedTask);
+
     /**
      * Fetches a single Task by directly fetching it through its ID
      * @param taskID UUID of the desired Task

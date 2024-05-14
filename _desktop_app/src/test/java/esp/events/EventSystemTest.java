@@ -67,9 +67,9 @@ class EventSystemTest {
         TestObserver obs1 = new TestObserver();
         TestObserver obs2 = new TestObserver();
         TestObserver obs3 = new TestObserver();
-        sut.addObserver(obs1, new Enum<?>[]{TestType.TYPE1});
-        sut.addObserver(obs2, new Enum<?>[]{TestType.TYPE2});
-        sut.addObserver(obs3, new Enum<?>[]{TestType.TYPE2});
+        sut.attachTypeObserver(obs1, new Enum<?>[]{TestType.TYPE1});
+        sut.attachTypeObserver(obs2, new Enum<?>[]{TestType.TYPE2});
+        sut.attachTypeObserver(obs3, new Enum<?>[]{TestType.TYPE2});
 
         sut.throwEvent(new TestEvent(TestType.TYPE1, 1));
         sut.throwEvent(new TestEvent(TestType.TYPE2, 2));
