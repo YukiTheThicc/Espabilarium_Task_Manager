@@ -39,8 +39,8 @@ public class TaskQueryMaker implements ITaskStowage.QueryMaker {
     }
 
     @Override
-    public void stowUpdateTask(ITask task) {
-        stowage.stowUpdateTask(task);
+    public void stowTask(ITask task) {
+        stowage.stowTask(task);
     }
 
     @Override

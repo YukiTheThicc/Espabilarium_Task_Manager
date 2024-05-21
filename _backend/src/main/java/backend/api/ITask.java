@@ -32,6 +32,9 @@ public interface ITask {
     ArrayList<ITask> getChildren();
     void addChild(ITask newChild);
     void removeChild(ITask toRemove);
-
     ITask copy(String uuid);
+
+    public interface DataComponent {
+
+    }
 }

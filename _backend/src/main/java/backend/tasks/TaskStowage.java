@@ -24,7 +24,7 @@ import java.util.HashMap;
 public class TaskStowage implements ITaskStowage {
 
     // CONSTANTS
-    private static final String DEFAULT_DATA_FOLDER = System.getProperty("user.dir") + "\\data\\";
+    public static final String DEFAULT_DATA_FOLDER = System.getProperty("user.dir") + "\\data\\";
 
     // ATTRIBUTES
     private final HashMap<String, ITask> tasks;
@@ -42,7 +42,13 @@ public class TaskStowage implements ITaskStowage {
     }
 
     // METHODS
-    public void stowUpdateTask(ITask task) {
+    public void stowTask(ITask task) {
+        if (task == null) throw new EspRuntimeException("Tried to stow null task");
+        tasks.putIfAbsent(task.getUuid(), task);
+        saveTask(task, DEFAULT_DATA_FOLDER);
+    }
+
+    public void updateTask(ITask task) {
         if (task == null) throw new EspRuntimeException("Tried to update null task");
         tasks.putIfAbsent(task.getUuid(), task);
         saveTask(task, DEFAULT_DATA_FOLDER);

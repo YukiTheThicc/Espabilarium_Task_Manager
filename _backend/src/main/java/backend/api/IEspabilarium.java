@@ -7,7 +7,7 @@ package backend.api;
  */
 public interface IEspabilarium {
 
-    void init();
+    void init(String dir);
 
     void close();
 }

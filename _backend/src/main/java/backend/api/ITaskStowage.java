@@ -9,7 +9,9 @@ import java.util.Collection;
  */
 public interface ITaskStowage {
 
-    void stowUpdateTask(ITask updatedTask);
+    void stowTask(ITask newTask);
+
+    void updateTask(ITask updatedTask);
 
     /**
      * Nests into the parent task (first one) the specified child task (second one)
@@ -40,7 +42,7 @@ public interface ITaskStowage {
 
         Collection<ITask> selectTasks(String field, SelectOrder order);
 
-        void stowUpdateTask(ITask task);
+        void stowTask(ITask task);
 
         void removeTask(String uuid);
     }
