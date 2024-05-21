@@ -1,5 +1,7 @@
 package frontend.ui;
 
+import backend.api.IEventSystem;
+import backend.api.ITaskStowage;
 import backend.events.EventSystem;
 import backend.tasks.TaskQueryMaker;
 import frontend.ui.views.ArchiveMainView;
@@ -42,8 +44,8 @@ public class UserInterface {
 
     // ATTRIBUTES
     private final ArrayList<ImageButton> leftPanelOptions;          // List of button options to render in the left panel
-    private final EventSystem eventSystem;                          // Event system to throw GUI generated events
-    private final TaskQueryMaker queryMaker;                        // 
+    private final IEventSystem eventSystem;                         // Event system to throw GUI generated events
+    private final ITaskStowage.QueryMaker queryMaker;
     private ProjectsMainView projectsMainView;                      // Projects main view object
     private DebugView debugView;                                    // Projects main view object
     private MainView currentView;                                   // Current view to display in the main view section
@@ -59,7 +61,7 @@ public class UserInterface {
 
 
     // CONSTRUCTORS
-    public UserInterface(EventSystem es, TaskQueryMaker queryMaker, boolean debugMode) {
+    public UserInterface(IEventSystem es, ITaskStowage.QueryMaker queryMaker, boolean debugMode) {
         this.leftPanelOptions = new ArrayList<>();
         this.eventSystem = es;
         this.queryMaker = queryMaker;

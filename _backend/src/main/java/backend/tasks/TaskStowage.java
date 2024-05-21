@@ -4,7 +4,6 @@ import backend.api.IEventSystem;
 import backend.api.ITask;
 import backend.api.ITaskStowage;
 import backend.events.Event;
-import backend.events.EventSystem;
 import backend.exceptions.EspRuntimeException;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -26,20 +25,19 @@ public class TaskStowage implements ITaskStowage {
 
     // CONSTANTS
     private static final String DEFAULT_DATA_FOLDER = System.getProperty("user.dir") + "\\data\\";
-    private static final int DEFAULT_THREADS = 4;
 
     // ATTRIBUTES
     private final HashMap<String, ITask> tasks;
     private final IEventSystem es;
 
     // CONSTRUCTORS
-    public TaskStowage(EventSystem es) {
+    public TaskStowage(IEventSystem es) {
         this.tasks = new HashMap<>();
         this.es = es;
     }
 
     // GETTERS & SETTERS
-    public Collection<ITask> getTasks() {
+    public Collection<ITask> getAllTasks() {
         return tasks.values();
     }
 
@@ -95,7 +93,7 @@ public class TaskStowage implements ITaskStowage {
                 .enableComplexMapKeySerialization()
                 .registerTypeAdapter(ITask.class, new TaskSerializer())
                 .create();
-        String inFile = "";
+        String inFile;
         ITask loaded = null;
         try {
             inFile = new String(Files.readAllBytes(Paths.get(dataPath + uuid + ".json")));

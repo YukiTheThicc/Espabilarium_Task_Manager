@@ -13,11 +13,15 @@ import java.util.Collection;
 public class TaskQueryMaker implements ITaskStowage.QueryMaker {
 
     // ATTRIBUTES
-    private TaskStowage stowage;
+    private ITaskStowage stowage;
 
     // CONSTRUCTORS
     public TaskQueryMaker() {
         this.stowage = null;
+    }
+
+    public TaskQueryMaker(ITaskStowage stowage) {
+        this.stowage = stowage;
     }
 
     // METHODS
@@ -28,9 +32,19 @@ public class TaskQueryMaker implements ITaskStowage.QueryMaker {
     }
 
     @Override
-    public Collection<ITask> queryTasks(String field, Order order) {
+    public Collection<ITask> selectTasks(String field, SelectOrder order) {
         if (stowage != null) {
-            return stowage.getTasks();
+            return stowage.getAllTasks();
         } else return null;
+    }
+
+    @Override
+    public void stowUpdateTask(ITask task) {
+        stowage.stowUpdateTask(task);
+    }
+
+    @Override
+    public void removeTask(String uuid) {
+
     }
 }

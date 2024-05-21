@@ -1,6 +1,7 @@
 package frontend.ui.views;
 
 import backend.api.IEvent;
+import backend.api.IEventSystem;
 import backend.events.EventSystem;
 import frontend.ui.ImGuiLayer;
 import frontend.ui.Image;
@@ -30,7 +31,7 @@ public class DebugView extends View implements IEvent.Observer {
     private final ArrayList<String> debugLog;                       // Collapsed debug window flag
 
     // CONSTRUCTORS
-    public DebugView(ImGuiLayer layer, EventSystem es) {
+    public DebugView(ImGuiLayer layer, IEventSystem es) {
         super(layer, es);
         this.debugLog = new ArrayList<>();
     }

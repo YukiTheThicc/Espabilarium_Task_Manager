@@ -1,5 +1,6 @@
 package frontend.ui.views;
 
+import backend.api.IEventSystem;
 import backend.api.ITask;
 import backend.events.EventSystem;
 import frontend.events.Event;
@@ -33,7 +34,7 @@ public class TaskEditionView extends View {
     private final int[] activeColor;
 
     // CONSTRUCTORS
-    public TaskEditionView(ImGuiLayer layer, EventSystem es, ITask task, boolean isNew) {
+    public TaskEditionView(ImGuiLayer layer, IEventSystem es, ITask task, boolean isNew) {
         super(layer, es);
         this.task = task.copy(task.getUuid());
         this.editMode = isNew;

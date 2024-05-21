@@ -8,7 +8,7 @@ package frontend;
 public class AppLauncher {
     // METHODS
     public static void main(String[] args) {
-        EspabilariumDesktop app = new EspabilariumDesktop();
+        DesktopFront app = new DesktopFront();
         boolean debug = false;
         for (String arg : args) {
             String[] argSplit = arg.split("=");

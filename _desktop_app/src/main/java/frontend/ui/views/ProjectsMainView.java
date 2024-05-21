@@ -1,12 +1,11 @@
 package frontend.ui.views;
 
 import backend.api.IEvent;
+import backend.api.IEventSystem;
 import backend.api.ITask;
 import backend.api.ITaskStowage;
 import backend.events.Event;
-import backend.events.EventSystem;
 import backend.tasks.Task;
-import backend.tasks.TaskQueryMaker;
 import frontend.ui.*;
 import frontend.ui.widgets.ImageButton;
 import frontend.utils.EspStyles;
@@ -34,7 +33,7 @@ public class ProjectsMainView extends View implements IEvent.Observer {
 
     // ATTRIBUTES
     private final ImageButton createTaskButton;
-    private final TaskQueryMaker queryMaker;
+    private final ITaskStowage.QueryMaker queryMaker;
     private final ArrayList<Field> activeFields;
     private final HashMap<Field, Boolean> fieldFilter;
     private final ArrayList<ITask> tasks;
@@ -43,7 +42,7 @@ public class ProjectsMainView extends View implements IEvent.Observer {
     private boolean isDirty;
 
     // CONSTRUCTORS
-    public ProjectsMainView(ImGuiLayer layer, EventSystem es, TaskQueryMaker queryMaker) {
+    public ProjectsMainView(ImGuiLayer layer, IEventSystem es, ITaskStowage.QueryMaker queryMaker) {
         super(layer, es);
         float buttonWidth = ImGuiUtils.textSize(Resources.literal("create_new_task")) + EspStyles.SMALL_ICON_SIZE + ImGui.getStyle().getFramePaddingX() * 6;
         this.createTaskButton = new ImageButton((Image) Resources.icon("create.png"), Resources.literal("create_new_task"),
@@ -108,7 +107,7 @@ public class ProjectsMainView extends View implements IEvent.Observer {
 
     private void updateList() {
         tasks.clear();
-        tasks.addAll(queryMaker.queryTasks("name", ITaskStowage.QueryMaker.Order.DESCENDANT));
+        tasks.addAll(queryMaker.selectTasks("name", ITaskStowage.QueryMaker.SelectOrder.DESCENDANT));
     }
 
     private void updateTable(Field changed) {

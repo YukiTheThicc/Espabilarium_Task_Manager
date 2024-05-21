@@ -19,36 +19,29 @@ public interface ITaskStowage {
     void nestTask(ITask parent, ITask Child);
 
     /**
+     * Retrieves all Tasks stored in memory within this system
+     * @return Collection with all stored tasks
+     */
+    Collection<ITask> getAllTasks();
+
+    /**
      * Fetches a single Task by directly fetching it through its ID
      * @param taskID UUID of the desired Task
      * @return The desired Task or null if not found
      */
     ITask getTask(String taskID);
 
-    /**
-     * Saves the specified Task on disk within the specified directory. The files name will be the same as the ID of the Task
-     * @param task The Task to be saved
-     * @param dir The directory to save the Task in. Can be relative
-     */
-    void saveTask(ITask task, String dir);
-
-    /**
-     * Loads one Task from a directory
-     * @param dir Directory from which to load the file from
-     * @param uuid UUID (name of the file) for the loaded Task
-     * @return The loaded Task or null if something went wrong
-     */
-    ITask loadTask(String dir, String uuid);
-
     public interface QueryMaker {
 
-        public enum Order {
+        public enum SelectOrder {
             ASCENDENT,
             DESCENDANT
         }
 
-        void connectStowage(ITaskStowage stowage);
+        Collection<ITask> selectTasks(String field, SelectOrder order);
 
-        Collection<ITask> queryTasks(String field, Order order);
+        void stowUpdateTask(ITask task);
+
+        void removeTask(String uuid);
     }
 }

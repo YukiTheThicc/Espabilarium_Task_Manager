@@ -2,6 +2,7 @@ package frontend.events;
 
 import backend.api.IEvent;
 import backend.api.ITask;
+import backend.api.ITaskStowage;
 import backend.tasks.TaskStowage;
 import static frontend.events.Event.Type.*;
 
@@ -13,18 +14,18 @@ import static frontend.events.Event.Type.*;
 public class EventObserver implements IEvent.Observer {
 
     // ATTRIBUTES
-    private final TaskStowage targetStowage;
+    private final ITaskStowage.QueryMaker queryMaker;
 
     // CONSTRUCTORS
-    public EventObserver(TaskStowage targetStowage) {
-        this.targetStowage = targetStowage;
+    public EventObserver(ITaskStowage.QueryMaker queryMaker) {
+        this.queryMaker = queryMaker;
     }
 
     // METHODS
     @Override
     public void handleEvent(IEvent event) {
         if (event.getPayload() instanceof ITask) {
-            if (event.getEventType() == STOW_TASK) targetStowage.stowUpdateTask(((ITask) event.getPayload()));
+            if (event.getEventType() == STOW_TASK) queryMaker.stowUpdateTask(((ITask) event.getPayload()));
         }
     }
 }

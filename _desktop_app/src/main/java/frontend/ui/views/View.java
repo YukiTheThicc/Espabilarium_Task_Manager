@@ -1,5 +1,6 @@
 package frontend.ui.views;
 
+import backend.api.IEventSystem;
 import backend.events.EventSystem;
 import frontend.ui.ImGuiLayer;
 
@@ -12,16 +13,16 @@ public abstract class View {
 
     // ATTRIBUTES
     private final ImGuiLayer layer;
-    private final EventSystem es;
+    private final IEventSystem es;
 
     // CONSTRUCTORS
-    public View (ImGuiLayer layer, EventSystem es) {
+    public View (ImGuiLayer layer, IEventSystem es) {
         this.layer = layer;
         this.es = es;
     }
 
     // GETTERS & SETTERS
-    public EventSystem getEventSystem() {
+    public IEventSystem getEventSystem() {
         return es;
     }
 

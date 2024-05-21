@@ -38,15 +38,11 @@ public class Window {
 
     // CONSTRUCTORS
     private Window() {
-        this.width = 1200;
-        this.height = 800;
-        stackPush();
-        this.posX = stackCallocInt(1);
-        stackPush();
-        this.posY = stackCallocInt(1);
+        width = 1200;
+        height = 800;
+
         this.title = "DiamondEngine v0.0.0.1";
-        stackPop();
-        stackPop();
+
     }
 
     // GETTERS & SETTERS
@@ -97,6 +93,14 @@ public class Window {
     }
 
     public void init(String title, String iconPath) {
+
+        stackPush();
+        this.posX = stackCallocInt(1);
+        stackPush();
+        this.posY = stackCallocInt(1);
+        stackPop();
+        stackPop();
+
         GLFWErrorCallback.createPrint(System.err).set();
 
         if (!glfwInit()) {
