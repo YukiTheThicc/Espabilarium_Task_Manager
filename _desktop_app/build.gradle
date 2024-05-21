@@ -33,6 +33,7 @@ dependencies {
 
     implementation 'org.mongodb:mongodb-driver-sync:5.0.1'
     implementation "org.joml:joml:${jomlVersion}"
+    implementation project(path: ':_backend')
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
