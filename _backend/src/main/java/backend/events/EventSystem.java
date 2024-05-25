@@ -2,8 +2,8 @@ package backend.events;
 
 import backend.api.IEvent;
 import backend.api.IEventSystem;
+import backend.utils.EspLogger;
 
-import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -71,7 +71,7 @@ public class EventSystem implements IEventSystem {
         if (event != null) {
             if (isDispatching) eventBuffer.add(event);
             else eventStack.add(event);
-            System.out.println(event.getEventType());
+            EspLogger.log("" + event.getEventType());
         }
     }
 

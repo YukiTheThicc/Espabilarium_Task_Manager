@@ -4,6 +4,7 @@ import backend.api.ITask;
 import backend.api.ITaskStowage;
 import backend.events.EventSystem;
 import backend.exceptions.EspRuntimeException;
+import backend.utils.EspLogger;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -73,8 +74,8 @@ class TaskStowageTest {
 
     @Test
     void testLoadTask() {
-        ITask loaded = sut.loadTask(testDataPath, "LOAD_TEST");
-        System.out.println(loaded);
+        ITask loaded = sut.loadTask(testDataPath + "LOAD_TEST.json");
+        EspLogger.log(loaded.toString());
         assertAll(() -> {
             assertEquals("00000003", loaded.getUuid());
             assertEquals("Loading test Task", loaded.getName());

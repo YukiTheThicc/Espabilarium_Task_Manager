@@ -30,7 +30,6 @@ public class Window {
     // ATTRIBUTES
     private static int width, height;
     private IntBuffer posX, posY;
-    private String title;
     private long glfwWindow;
     private static Window window = null;
     private long audioContext;
@@ -40,9 +39,6 @@ public class Window {
     private Window() {
         width = 1200;
         height = 800;
-
-        this.title = "DiamondEngine v0.0.0.1";
-
     }
 
     // GETTERS & SETTERS
@@ -52,10 +48,6 @@ public class Window {
 
     public static int getHeight() {
         return height;
-    }
-
-    public String getTitle() {
-        return title;
     }
 
     public long getGlfwWindow() {
@@ -70,10 +62,6 @@ public class Window {
         Window.height = height;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
     public static Vector2f getPosition() {
         Window window = get();
         Vector2f pos = new Vector2f();
@@ -83,15 +71,7 @@ public class Window {
         return pos;
     }
 
-    public static float getAspectRatio() {
-        return (float) width / height;
-    }
-
     // METHODS
-    public void resizeCallback() {
-        System.out.println("Resizing");
-    }
-
     public void init(String title, String iconPath) {
 
         stackPush();
@@ -162,10 +142,6 @@ public class Window {
 
     public void pollEvents() {
         glfwPollEvents();
-    }
-
-    public void startFrame() {
-
     }
 
     public void endFrame() {

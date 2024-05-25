@@ -24,7 +24,7 @@ class EspabilariumTest {
         exec.scheduleAtFixedRate(new Runnable() {
             @Override
             public void run() {
-                System.out.println("Updating");
+                EspLogger.log("Updating");
             }
         }, 0, 500, TimeUnit.MILLISECONDS);
         while(true);

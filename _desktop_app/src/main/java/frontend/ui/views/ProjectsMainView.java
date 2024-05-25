@@ -6,6 +6,7 @@ import backend.api.ITask;
 import backend.api.ITaskStowage;
 import backend.events.Event;
 import backend.tasks.Task;
+import backend.utils.EspLogger;
 import frontend.ui.*;
 import frontend.ui.widgets.ImageButton;
 import frontend.utils.EspStyles;
@@ -15,6 +16,7 @@ import imgui.ImGui;
 import imgui.flag.*;
 
 import java.lang.reflect.Field;
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -60,6 +62,7 @@ public class ProjectsMainView extends View implements IEvent.Observer {
                 fieldFilter.put(field, false);
             }
         }
+        updateList();
     }
 
     // METHODS
@@ -107,6 +110,7 @@ public class ProjectsMainView extends View implements IEvent.Observer {
 
     private void updateList() {
         tasks.clear();
+        EspLogger.log("updating projects view list");
         tasks.addAll(queryMaker.selectTasks("name", ITaskStowage.QueryMaker.SelectOrder.DESCENDANT));
     }
 
@@ -167,5 +171,6 @@ public class ProjectsMainView extends View implements IEvent.Observer {
             TaskEditionView view = tasksViews.get((String) event.getPayload());
             if (view != null) view.taskSaved();
         }
+        if (event.getEventType() == Event.Type.LOADED_TASKS) updateList();
     }
 }

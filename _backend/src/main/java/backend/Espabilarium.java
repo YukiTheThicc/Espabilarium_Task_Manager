@@ -3,13 +3,15 @@ package backend;
 import backend.api.IEspabilarium;
 import backend.api.IEventSystem;
 import backend.api.ITaskStowage;
+import backend.events.Event;
 import backend.events.EventSystem;
 import backend.tasks.TaskQueryMaker;
 import backend.tasks.TaskStowage;
+import backend.utils.EspLogger;
 import backend.utils.Utils;
+import org.graalvm.nativeimage.hosted.RuntimeJNIAccess;
 
 import java.io.File;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -50,16 +52,22 @@ public class Espabilarium implements IEspabilarium {
         // Launch background service
         exec = Executors.newSingleThreadScheduledExecutor();
         exec.scheduleAtFixedRate(notificationService, 0, 2, TimeUnit.SECONDS);
+        loadData(dataFolder);
+    }
 
-        File dataDir = new File(dataFolder == null ? TaskStowage.DEFAULT_DATA_FOLDER : dataFolder);
-        if (dataDir.isDirectory()) {
-            ArrayList<File> taskFiles = Utils.getFilesInDir(dataDir.getAbsolutePath(), "json");
-            for (File file : taskFiles) {
-                System.out.println(file.getAbsoluteFile());
-                System.out.println(file.getName());
-                stowage.loadTask(file.getAbsolutePath(), file.getName().split("\\.")[0]);
+    public void loadData(String dataPath) {
+        Runnable loader = () -> {
+            File dataDir = new File(dataPath == null ? TaskStowage.DEFAULT_DATA_FOLDER : dataPath);
+            if (dataDir.isDirectory()) {
+                ArrayList<File> taskFiles = Utils.getFilesInDir(dataDir.getAbsolutePath(), "json");
+                for (File file : taskFiles) {
+                    stowage.loadTask(file.getAbsolutePath());
+                }
             }
-        }
+            EspLogger.log("Finished loading tasks from data dir");
+            eventSystem.throwEvent(new Event(Event.Type.LOADED_TASKS));
+        };
+        loader.run();
     }
 
     public void close() {

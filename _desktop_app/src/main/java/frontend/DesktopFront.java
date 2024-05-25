@@ -3,6 +3,7 @@ package frontend;
 import backend.Espabilarium;
 import backend.api.IEventSystem;
 import backend.exceptions.EspRuntimeException;
+import backend.utils.EspLogger;
 import frontend.events.EventObserver;
 import frontend.ui.ImGuiLayer;
 import frontend.ui.UserInterface;
@@ -14,9 +15,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 import static frontend.events.Event.Type.*;
 import static org.lwjgl.glfw.GLFW.glfwGetTime;
@@ -51,13 +49,18 @@ public class DesktopFront implements ActionListener, MouseListener {
 
     // METHODS
     public void launch(boolean debug) {
-        espabilarium.init(null);
-        // Create and connect the UIEventObserver to the event system
-        eventSystem.attachObserver(new Enum[]{STOW_TASK, USER_EVENT}, new EventObserver(espabilarium.queryMaker()));
-        // Setup tray
-        setupTray();
-        this.debug = debug;
-        openWindow();
+        try {
+            espabilarium.init(null);
+            // Create and connect the UIEventObserver to the event system
+            eventSystem.attachObserver(new Enum[]{STOW_TASK, USER_EVENT}, new EventObserver(espabilarium.queryMaker()));
+            // Setup tray
+            setupTray();
+            this.debug = debug;
+            openWindow();
+        } catch (EspRuntimeException e) {
+            EspLogger.log(e.getMessage());
+            espabilarium.close();
+        }
     }
 
     public boolean shouldClose() {
@@ -86,7 +89,7 @@ public class DesktopFront implements ActionListener, MouseListener {
 
     private void setupTray() {
         if (!SystemTray.isSupported()) {
-            System.out.println("SystemTray is not supported");
+            EspLogger.log("SystemTray is not supported");
             return;
         }
         Image image = Toolkit.getDefaultToolkit().getImage(System.getProperty("user.dir") + "\\res\\icons\\default.png");

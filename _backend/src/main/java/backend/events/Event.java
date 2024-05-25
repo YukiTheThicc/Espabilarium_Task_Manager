@@ -12,7 +12,8 @@ public record Event(Type type, Object payload, int handleIterations) implements 
     public enum Type {
         CREATED_TASK,
         SAVED_TASK,
-        REMOVED_TASK
+        REMOVED_TASK,
+        LOADED_TASKS
     }
 
     // CONSTRUCTORS

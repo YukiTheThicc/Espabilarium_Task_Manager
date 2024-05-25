@@ -83,7 +83,7 @@ public class UserInterface {
 
         // Create views
         this.projectsMainView = new ProjectsMainView(layer, eventSystem, queryMaker);
-        eventSystem.attachObserver(new Enum[]{SAVED_TASK, CREATED_TASK}, this.projectsMainView);
+        eventSystem.attachObserver(new Enum[]{SAVED_TASK, CREATED_TASK, LOADED_TASKS}, this.projectsMainView);
         this.debugView = new DebugView(layer, eventSystem);
 
         // Attach the debug view to the event system

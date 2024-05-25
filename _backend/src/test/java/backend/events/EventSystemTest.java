@@ -2,6 +2,7 @@ package backend.events;
 
 import backend.api.IEvent;
 import backend.events.EventSystem;
+import backend.utils.EspLogger;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -46,7 +47,7 @@ class EventSystemTest {
 
         @Override
         public void handleEvent(IEvent event) {
-            System.out.println(event.getPayload().toString());
+            EspLogger.log(event.getPayload().toString());
             handleCount++;
         }
     }

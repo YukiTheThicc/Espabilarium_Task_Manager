@@ -1,5 +1,7 @@
 package backend;
 
+import backend.utils.EspLogger;
+
 /**
  * NotificationService
  *
@@ -23,6 +25,6 @@ public class NotificationService implements Runnable {
     // METHODS
     @Override
     public void run() {
-        System.out.println("Checking for notifications...");
+        EspLogger.log("Checking for notifications...");
     }
 }

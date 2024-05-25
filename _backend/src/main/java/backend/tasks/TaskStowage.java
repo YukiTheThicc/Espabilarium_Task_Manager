@@ -93,7 +93,7 @@ public class TaskStowage implements ITaskStowage {
         }
     }
 
-    public ITask loadTask(String dataPath, String uuid) {
+    public ITask loadTask(String dataPath) {
         Gson gson = new GsonBuilder()
                 .setPrettyPrinting()
                 .enableComplexMapKeySerialization()
@@ -102,13 +102,14 @@ public class TaskStowage implements ITaskStowage {
         String inFile;
         ITask loaded = null;
         try {
-            inFile = new String(Files.readAllBytes(Paths.get(dataPath + uuid + ".json")));
+            inFile = new String(Files.readAllBytes(Paths.get(dataPath)));
             if (!inFile.equals("")) {
                 loaded = gson.fromJson(inFile, Task.class);
             }
         } catch (Exception e) {
             return null;
         }
+        stowTask(loaded);
         return loaded;
     }
 }
