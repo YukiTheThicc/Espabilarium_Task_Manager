@@ -2,6 +2,7 @@ package frontend;
 
 import backend.Espabilarium;
 import backend.api.IEventSystem;
+import backend.api.INotifier;
 import backend.exceptions.EspRuntimeException;
 import backend.utils.EspLogger;
 import frontend.events.EventObserver;
@@ -43,18 +44,31 @@ public class DesktopFront implements ActionListener, MouseListener {
     public DesktopFront() {
         this.window = Window.get();
         this.imgui = null;
-        this.espabilarium = new Espabilarium();
+
+        this.espabilarium = new Espabilarium(new INotifier() {
+            @Override
+            public void notifyUser(String message) {
+                if (trayIcon != null) {
+                    trayIcon.displayMessage("Espabilarium", message, TrayIcon.MessageType.INFO);
+                }
+            }
+
+            @Override
+            public void warnUser(String message) {
+
+            }
+        });
         this.eventSystem = espabilarium.getEventSystem();
     }
 
     // METHODS
     public void launch(boolean debug) {
         try {
+            // Setup tray before Espabilarium to create the tray icon and notifier before teh deamon is started
+            setupTray();
             espabilarium.init(null);
             // Create and connect the UIEventObserver to the event system
             eventSystem.attachObserver(new Enum[]{STOW_TASK, USER_EVENT}, new EventObserver(espabilarium.queryMaker()));
-            // Setup tray
-            setupTray();
             this.debug = debug;
             openWindow();
         } catch (EspRuntimeException e) {
@@ -92,17 +106,15 @@ public class DesktopFront implements ActionListener, MouseListener {
             EspLogger.log("SystemTray is not supported");
             return;
         }
-        Image image = Toolkit.getDefaultToolkit().getImage(System.getProperty("user.dir") + "\\res\\icons\\default.png");
-        PopupMenu popup = new PopupMenu();
-        trayIcon = new TrayIcon(image, "Espabilarium", popup);
-        trayIcon.addMouseListener(this);
         tray = SystemTray.getSystemTray();
-
+        Image image = Toolkit.getDefaultToolkit().createImage("icon.png");
+        PopupMenu popup = new PopupMenu();
         MenuItem exitItem = new MenuItem("Exit");
         exitItem.addActionListener(this);
         popup.add(exitItem);
-        trayIcon.setPopupMenu(popup);
-
+        trayIcon = new TrayIcon(image, "Espabilarium", popup);
+        trayIcon.addMouseListener(this);
+        trayIcon.setImageAutoSize(true);
         try {
             tray.add(trayIcon);
         } catch (AWTException e) {
@@ -116,7 +128,6 @@ public class DesktopFront implements ActionListener, MouseListener {
         float et;
         float dt = 0f;
         while (running) {
-            eventSystem.dispatchEvents();
             window.pollEvents();
             imgui.update(dt);
             window.endFrame();

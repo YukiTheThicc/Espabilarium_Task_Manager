@@ -2,14 +2,15 @@ package backend;
 
 import backend.api.IEspabilarium;
 import backend.api.IEventSystem;
+import backend.api.INotifier;
 import backend.api.ITaskStowage;
+import backend.deamon.Deamon;
 import backend.events.Event;
 import backend.events.EventSystem;
 import backend.tasks.TaskQueryMaker;
 import backend.tasks.TaskStowage;
 import backend.utils.EspLogger;
 import backend.utils.Utils;
-import org.graalvm.nativeimage.hosted.RuntimeJNIAccess;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -27,14 +28,14 @@ public class Espabilarium implements IEspabilarium {
     // ATTRIBUTES
     private final TaskStowage stowage;
     private final IEventSystem eventSystem;
-    private final NotificationService notificationService;
+    private final Deamon notificationService;
     private ScheduledExecutorService exec;
 
     // CONSTRUCTORS
-    public Espabilarium() {
+    public Espabilarium(INotifier notificator) {
         this.eventSystem = new EventSystem();
         this.stowage = new TaskStowage(this.eventSystem);
-        this.notificationService = new NotificationService();
+        this.notificationService = new Deamon(this.stowage, this.eventSystem,notificator);
     }
 
     // GETTERS & SETTERS
@@ -43,16 +44,16 @@ public class Espabilarium implements IEspabilarium {
     }
 
     // METHODS
-
     /**
      * Initializes the app and storage, setting up the notification service and loading into memory all stored data
+     *
      * @param dataFolder Directory to load the data form
      */
     public void init(String dataFolder) {
         // Launch background service
-        exec = Executors.newSingleThreadScheduledExecutor();
-        exec.scheduleAtFixedRate(notificationService, 0, 2, TimeUnit.SECONDS);
         loadData(dataFolder);
+        exec = Executors.newSingleThreadScheduledExecutor();
+        exec.scheduleAtFixedRate(notificationService, 0, 1, TimeUnit.SECONDS);
     }
 
     public void loadData(String dataPath) {

@@ -33,7 +33,7 @@ public interface ITaskStowage {
      */
     ITask getTask(String taskID);
 
-    public interface QueryMaker {
+    interface QueryMaker {
 
         public enum SelectOrder {
             ASCENDENT,
