@@ -69,6 +69,7 @@ public class ImGuiLayer {
 
         initCallbacks(io);
         addAvailableFonts(io);
+
         // Set up clipboard functionality
         io.setSetClipboardTextFn(new ImStrConsumer() {
             @Override
@@ -104,6 +105,8 @@ public class ImGuiLayer {
                 io.setKeysDown(key, false);
             }
 
+            KeyControls.processControls(io);
+
             io.addConfigFlags(ImGuiConfigFlags.NavNoCaptureKeyboard);
 
             io.setKeyCtrl(io.getKeysDown(GLFW_KEY_LEFT_CONTROL) || io.getKeysDown(GLFW_KEY_RIGHT_CONTROL));
@@ -111,6 +114,17 @@ public class ImGuiLayer {
             io.setKeyAlt(io.getKeysDown(GLFW_KEY_LEFT_ALT) || io.getKeysDown(GLFW_KEY_RIGHT_ALT));
             io.setKeySuper(io.getKeysDown(GLFW_KEY_LEFT_SUPER) || io.getKeysDown(GLFW_KEY_RIGHT_SUPER));
 
+            if (!io.getWantCaptureKeyboard()) {
+                //KeyListener.keyCallback(w, key, scancode, action, mods);
+            }
+        });
+
+        glfwSetCharCallback(glfwWindow, (w, c) -> {
+            //DiaLogger.log("Pressed char: " + w + " - " + c);
+        });
+
+        glfwSetCharModsCallback(glfwWindow, (w, c, k) -> {
+            //DiaLogger.log("Pressed char: " + w + " - " + c + " - " + k);
         });
 
         glfwSetMouseButtonCallback(glfwWindow, (w, button, action, mods) -> {

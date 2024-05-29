@@ -1,7 +1,11 @@
 package frontend.ui.views;
 
 import frontend.ui.UserInterface;
+import frontend.utils.ImGuiUtils;
+import frontend.utils.Resources;
 import imgui.ImGui;
+import imgui.type.ImInt;
+import imgui.type.ImString;
 
 /**
  * DashBoardMainView
@@ -9,6 +13,10 @@ import imgui.ImGui;
  * @author: Santiago Barreiro
  */
 public class DashboardMainView {
+
+    static ImString string = new ImString("");
+    static String result = "";
+    static int a = 0;
 
     // METHODS
     public static void render() {

@@ -95,19 +95,6 @@ public class ProjectsMainView extends View implements IEvent.Observer {
         }
     }
 
-    private void renderTaskRow(ITask task) {
-        ImGui.tableNextColumn();
-        ImGui.text(task.getUuid());
-        ImGui.tableNextColumn();
-        ImGui.text(task.getName());
-
-        for (Field field : activeFields) {
-            ImGui.tableNextColumn();
-            Object value = ((Task) task).getField(field);
-            if (value != null) ImGui.text(value.toString());
-        }
-    }
-
     private void updateList() {
         tasks.clear();
         EspLogger.log("updating projects view list");
@@ -119,6 +106,22 @@ public class ProjectsMainView extends View implements IEvent.Observer {
         else activeFields.add(changed);
         fieldFilter.put(changed, !fieldFilter.get(changed));
     }
+
+    private void renderTaskRow(ITask task) {
+
+        ImGui.tableNextColumn();
+        if (ImGui.selectable(task.getName() + "###" + task.getUuid(), false, ImGuiSelectableFlags.SpanAllColumns)) {
+            TaskEditionView newView = new TaskEditionView(getLayer(), getEventSystem(), task, true);
+            this.tasksViews.put(task.getUuid(), newView);
+        }
+
+        for (Field field : activeFields) {
+            ImGui.tableNextColumn();
+            Object value = ((Task) task).getField(field);
+            if (value != null) ImGui.text(value.toString());
+        }
+    }
+
 
     private void renderOverview() {
         if (ImGui.beginTabItem(Resources.literal("overview"))) {
@@ -134,10 +137,8 @@ public class ProjectsMainView extends View implements IEvent.Observer {
             if (ImGui.beginChild("##")) {
 
                 if (!tasks.isEmpty()) {
-                    if (ImGui.beginTable("##", 2 + activeFields.size(), TABLE_FLAGS)) {
+                    if (ImGui.beginTable("##", 1 + activeFields.size(), TABLE_FLAGS)) {
                         // Basic fields
-                        ImGui.tableNextColumn();
-                        ImGui.tableHeader(Resources.literal("uuid"));
                         ImGui.tableNextColumn();
                         ImGui.tableHeader(Resources.literal("name"));
 
@@ -170,6 +171,7 @@ public class ProjectsMainView extends View implements IEvent.Observer {
         if (event.getEventType() == Event.Type.SAVED_TASK) {
             TaskEditionView view = tasksViews.get((String) event.getPayload());
             if (view != null) view.taskSaved();
+            updateList();
         }
         if (event.getEventType() == Event.Type.LOADED_TASKS) updateList();
     }

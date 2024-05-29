@@ -6,9 +6,6 @@ group 'esp'
 version '1.0-SNAPSHOT'
 
 repositories {
-    flatDir {
-        dirs 'lib'
-    }
     jcenter()
     mavenCentral()
 }

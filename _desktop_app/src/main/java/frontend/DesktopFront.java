@@ -68,12 +68,12 @@ public class DesktopFront implements ActionListener, MouseListener {
             setupTray();
             espabilarium.init(null);
             // Create and connect the UIEventObserver to the event system
-            eventSystem.attachObserver(new Enum[]{STOW_TASK, USER_EVENT}, new EventObserver(espabilarium.queryMaker()));
+            eventSystem.attachObserver(new Enum[]{STOW_TASK, UPDATE_TASK, USER_EVENT}, new EventObserver(espabilarium.queryMaker()));
             this.debug = debug;
             openWindow();
         } catch (EspRuntimeException e) {
-            EspLogger.log(e.getMessage());
-            espabilarium.close();
+            EspLogger.log(e.getMessage(), EspLogger.Level.ERROR);
+            this.close();
         }
     }
 

@@ -2,7 +2,6 @@ package backend.deamon;
 
 import backend.api.IEventSystem;
 import backend.api.INotifier;
-import backend.api.ITask;
 import backend.api.ITaskStowage;
 import backend.utils.EspLogger;
 
@@ -32,7 +31,7 @@ public class Deamon implements Runnable {
     // METHODS
     @Override
     public void run() {
-        EspLogger.log("Checking for notifications... " + runs);
+        EspLogger.log("Advancing DB... " + runs);
         es.dispatchEvents();
         runs++;
         if (firstRun) {

@@ -33,6 +33,10 @@ public class TaskQueryMaker implements ITaskStowage.QueryMaker {
         stowage.stowTask(task);
     }
 
+    public void updateTask(ITask task) {
+        stowage.saveTask(task);
+    }
+
     @Override
     public void removeTask(String uuid) {
 

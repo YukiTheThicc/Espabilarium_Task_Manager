@@ -1,10 +1,6 @@
 package backend.tasks;
 
 import backend.api.ITask;
-import backend.tasks.Task;
-import backend.tasks.TaskPriority;
-import backend.tasks.TaskState;
-import backend.tasks.TaskType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -16,7 +12,7 @@ class TaskTest {
 
     @BeforeEach
     void setup() {
-        sut = new Task("0000000f", "Test Task", TaskType.TASK, TaskPriority.LOWEST);
+        sut = new Task("0000000f", "Test Task", Task.Type.TASK, Task.Priority.LOWEST);
     }
 
     @Test
@@ -41,17 +37,17 @@ class TaskTest {
 
     @Test
     void testGetType() {
-        assertEquals(TaskType.TASK, sut.getType());
+        assertEquals(Task.Type.TASK, sut.getType());
     }
 
     @Test
     void testGetState() {
-        assertEquals(TaskState.NEW, sut.getState());
+        assertEquals(Task.State.NEW, sut.getState());
     }
 
     @Test
     void testGetPriority() {
-        assertEquals(TaskPriority.LOWEST, sut.getPriority());
+        assertEquals(Task.Priority.LOWEST, sut.getPriority());
     }
 
     @Test
@@ -63,7 +59,7 @@ class TaskTest {
 
     @Test
     void testSetParent() {
-        ITask expected = new Task("f000000", "Parent task", TaskType.TASK, TaskPriority.LOWEST);
+        ITask expected = new Task("f000000", "Parent task", Task.Type.TASK, Task.Priority.LOWEST);
         sut.setParent(expected);
         assertEquals(expected.getUuid(), sut.getParent().getUuid());
     }
@@ -85,35 +81,35 @@ class TaskTest {
 
     @Test
     void testSetType() {
-        TaskType expected = TaskType.IDEA;
-        sut.setType(TaskType.IDEA);
+        Task.Type expected = Task.Type.IDEA;
+        sut.setType(Task.Type.IDEA);
         assertEquals(expected, sut.getType());
     }
 
     @Test
     void testSetState() {
-        TaskState expected = TaskState.IN_PROGRESS;
-        sut.setState(TaskState.IN_PROGRESS);
+        Task.State expected = Task.State.IN_PROGRESS;
+        sut.setState(Task.State.IN_PROGRESS);
         assertEquals(expected, sut.getState());
     }
 
     @Test
     void testSetPriority() {
-        TaskPriority expected = TaskPriority.HIGHEST;
-        sut.setPriority(TaskPriority.HIGHEST);
+        Task.Priority expected = Task.Priority.HIGHEST;
+        sut.setPriority(Task.Priority.HIGHEST);
         assertEquals(expected, sut.getPriority());
     }
 
     @Test
     void testAddChild() {
-        sut.addChild(new Task("00000001", "Child 1", TaskType.TASK, TaskPriority.LOWEST));
-        sut.addChild(new Task("00000002", "Child 2", TaskType.TASK, TaskPriority.LOWEST));
+        sut.addChild(new Task("00000001", "Child 1", Task.Type.TASK, Task.Priority.LOWEST));
+        sut.addChild(new Task("00000002", "Child 2", Task.Type.TASK, Task.Priority.LOWEST));
     }
 
     @Test
     void testGetChildren() {
-        ITask child1 = new Task("00000001", "Child 1", TaskType.TASK, TaskPriority.LOWEST);
-        ITask child2 = new Task("00000002", "Child 2", TaskType.TASK, TaskPriority.LOWEST);
+        ITask child1 = new Task("00000001", "Child 1", Task.Type.TASK, Task.Priority.LOWEST);
+        ITask child2 = new Task("00000002", "Child 2", Task.Type.TASK, Task.Priority.LOWEST);
         sut.addChild(child1);
         sut.addChild(child2);
         ITask[] actual = new ITask[2];
@@ -123,8 +119,8 @@ class TaskTest {
 
     @Test
     void testRemoveChild() {
-        TaskPriority expected = TaskPriority.HIGHEST;
-        sut.setPriority(TaskPriority.HIGHEST);
+        Task.Priority expected = Task.Priority.HIGHEST;
+        sut.setPriority(Task.Priority.HIGHEST);
         assertEquals(expected, sut.getPriority());
     }
 }

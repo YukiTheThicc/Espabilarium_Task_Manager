@@ -18,12 +18,12 @@ class EspabilariumTest {
         sut = new Espabilarium(new INotifier() {
             @Override
             public void notifyUser(String message) {
-                System.out.println(message);
+                EspLogger.log(message);
             }
 
             @Override
             public void warnUser(String message) {
-                System.out.println(message);
+                EspLogger.log(message);
             }
         });
     }

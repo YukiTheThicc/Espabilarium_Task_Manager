@@ -9,9 +9,25 @@ import java.util.Collection;
  */
 public interface ITaskStowage {
 
+    /**
+     * Get the absolute path where task data files are being stored
+     * @return The path String of the directory
+     */
+    String getDataDir();
+
+    // >> CRUD METHODS
+    /**
+     * Attempts to stow the passed task within the system. Should not immediately save to disk the task
+     * @param newTask Task to be stowed
+     */
     void stowTask(ITask newTask);
 
-    void updateTask(ITask updatedTask);
+    ITask loadTask(String dataPath);
+
+    void saveTask(ITask task);
+
+    void archiveTask(ITask toArchive);
+    // << CRUD METHODS
 
     /**
      * Nests into the parent task (first one) the specified child task (second one)
@@ -21,17 +37,16 @@ public interface ITaskStowage {
     void nestTask(ITask parent, ITask Child);
 
     /**
-     * Retrieves all Tasks stored in memory within this system
-     * @return Collection with all stored tasks
-     */
-    Collection<ITask> getAllTasks();
-
-    /**
      * Fetches a single Task by directly fetching it through its ID
      * @param taskID UUID of the desired Task
      * @return The desired Task or null if not found
      */
     ITask getTask(String taskID);
+    /**
+     * Retrieves all Tasks stored in memory within this system
+     * @return Collection with all stored tasks
+     */
+    Collection<ITask> getAllTasks();
 
     interface QueryMaker {
 
@@ -43,6 +58,8 @@ public interface ITaskStowage {
         Collection<ITask> selectTasks(String field, SelectOrder order);
 
         void stowTask(ITask task);
+
+        void updateTask(ITask task);
 
         void removeTask(String uuid);
     }

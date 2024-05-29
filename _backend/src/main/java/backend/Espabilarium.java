@@ -1,6 +1,5 @@
 package backend;
 
-import backend.api.IEspabilarium;
 import backend.api.IEventSystem;
 import backend.api.INotifier;
 import backend.api.ITaskStowage;
@@ -23,18 +22,23 @@ import java.util.concurrent.TimeUnit;
  *
  * @author Santiago Barreiro
  */
-public class Espabilarium implements IEspabilarium {
+public class Espabilarium {
+
+    // CONSTANTS
+    public static final String DEFAULT_DATA_FOLDER = System.getProperty("user.dir") + "\\data\\";
 
     // ATTRIBUTES
     private final TaskStowage stowage;
     private final IEventSystem eventSystem;
     private final Deamon notificationService;
+    private int deamonSchedule = 1000;
     private ScheduledExecutorService exec;
 
     // CONSTRUCTORS
     public Espabilarium(INotifier notificator) {
+        EspLogger.log("...Creating Espabilarium instance...");
         this.eventSystem = new EventSystem();
-        this.stowage = new TaskStowage(this.eventSystem);
+        this.stowage = new TaskStowage(this.eventSystem, DEFAULT_DATA_FOLDER);
         this.notificationService = new Deamon(this.stowage, this.eventSystem,notificator);
     }
 
@@ -50,32 +54,51 @@ public class Espabilarium implements IEspabilarium {
      * @param dataFolder Directory to load the data form
      */
     public void init(String dataFolder) {
+
+        // Setup user settings and working environment
+        setupEnvironment();
         // Launch background service
         loadData(dataFolder);
-        exec = Executors.newSingleThreadScheduledExecutor();
-        exec.scheduleAtFixedRate(notificationService, 0, 1, TimeUnit.SECONDS);
+        // Throw deamon
+        throwDeamon();
     }
 
-    public void loadData(String dataPath) {
+    public void close() {
+        EspLogger.log("...Closing deamon...");
+        if (exec != null) exec.shutdown();
+    }
+
+    public ITaskStowage.QueryMaker queryMaker() {
+        return new TaskQueryMaker(this.stowage);
+    }
+
+    private void setupEnvironment() {
+        // Ensure that the necessary files and directories are created
+        EspLogger.log("...Setting up environment...");
+
+
+        // TODO - Handle loading of user preferences and settings
+    }
+
+    private void loadData(String dataPath) {
+        EspLogger.log("...Loading data form '" + (dataPath == null ? DEFAULT_DATA_FOLDER : dataPath) + "'...");
         Runnable loader = () -> {
-            File dataDir = new File(dataPath == null ? TaskStowage.DEFAULT_DATA_FOLDER : dataPath);
+            File dataDir = new File(dataPath == null ? DEFAULT_DATA_FOLDER : dataPath);
             if (dataDir.isDirectory()) {
                 ArrayList<File> taskFiles = Utils.getFilesInDir(dataDir.getAbsolutePath(), "json");
                 for (File file : taskFiles) {
                     stowage.loadTask(file.getAbsolutePath());
                 }
             }
-            EspLogger.log("Finished loading tasks from data dir");
+            EspLogger.log("...Finished loading tasks from data dir...");
             eventSystem.throwEvent(new Event(Event.Type.LOADED_TASKS));
         };
         loader.run();
     }
 
-    public void close() {
-        exec.shutdown();
-    }
-
-    public ITaskStowage.QueryMaker queryMaker() {
-        return new TaskQueryMaker(this.stowage);
+    private void throwDeamon() {
+        EspLogger.log("...Dispatching deamon, scheduling each " + deamonSchedule + "ms...");
+        exec = Executors.newSingleThreadScheduledExecutor();
+        exec.scheduleAtFixedRate(notificationService, 0, deamonSchedule, TimeUnit.MILLISECONDS);
     }
 }

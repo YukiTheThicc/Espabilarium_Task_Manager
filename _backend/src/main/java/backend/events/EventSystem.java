@@ -71,7 +71,7 @@ public class EventSystem implements IEventSystem {
         if (event != null) {
             if (isDispatching) eventBuffer.add(event);
             else eventStack.add(event);
-            EspLogger.log("" + event.getEventType());
+            EspLogger.log(EventSystem.class, "Throwing event '" + event.getEventType() + "'");
         }
     }
 

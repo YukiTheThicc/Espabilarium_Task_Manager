@@ -1,7 +1,6 @@
 package frontend.ui;
 
 import backend.utils.EspLogger;
-import backend.utils.EspLoggerLevel;
 import org.lwjgl.BufferUtils;
 
 import java.nio.ByteBuffer;
@@ -107,11 +106,11 @@ public class Image {
                 glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, x.get(0), y.get(0), 0, GL_RGB, GL_UNSIGNED_BYTE, image);
                 this.loaded = true;
             } else {
-                    EspLogger.log(Image.class, "Failed to load image, unexpected number of channels", EspLoggerLevel.ERROR);
+                    EspLogger.log(Image.class, "Failed to load image, unexpected number of channels", EspLogger.Level.ERROR);
             }
             stbi_image_free(image);
         } else {
-            EspLogger.log(Image.class, "Failed to load image from '" + path + "'", EspLoggerLevel.ERROR);
+            EspLogger.log(Image.class, "Failed to load image from '" + path + "'", EspLogger.Level.ERROR);
         }
     }
 }

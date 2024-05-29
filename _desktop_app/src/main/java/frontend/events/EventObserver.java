@@ -7,7 +7,7 @@ import backend.api.ITaskStowage;
 import static frontend.events.Event.Type.*;
 
 /**
- * UIEventObserver
+ * eVENToBSERVER
  *
  * @author Santiago Barreiro
  */
@@ -24,8 +24,11 @@ public class EventObserver implements IEvent.Observer {
     // METHODS
     @Override
     public void handleEvent(IEvent event) {
-        if (event.getPayload() instanceof ITask) {
-            if (event.getEventType() == STOW_TASK) queryMaker.stowTask(((ITask) event.getPayload()));
+        if (event.getEventType() == STOW_TASK) {
+            queryMaker.stowTask((ITask) event.getPayload());
+        }
+        if (event.getEventType() == UPDATE_TASK) {
+            queryMaker.updateTask((ITask) event.getPayload());
         }
     }
 }

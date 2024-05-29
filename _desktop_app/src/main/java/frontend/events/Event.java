@@ -11,6 +11,7 @@ public record Event(Type type, Object payload, int handleIterations) implements 
 
     public enum Type {
         STOW_TASK,
+        UPDATE_TASK,
         USER_EVENT
     }
 

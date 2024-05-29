@@ -14,9 +14,44 @@ import java.util.ArrayList;
  */
 public class Task implements ITask {
 
+    public enum Type {
+
+        TASK("task"),
+        IDEA("idea"),
+        PROJECT("project");
+
+        private final String tag;
+
+        Type(String type) {
+            this.tag = type;
+        }
+    }
+
+    public enum State {
+
+        NEW("new", 0),
+        ON_HOLD("on_hold", 1),
+        IN_PROGRESS("in_progress", 2),
+        RESOLVED("resolved", 3),
+        FINISHED("finished", 4),
+        ARCHIVED("archived", 4);
+
+        private final String tag;
+
+        State(String literal, int code) {
+            this.tag = literal;
+        }
+    }
+
+    public enum Priority {
+
+        HIGHEST,
+        LOWEST
+    }
+
     public static class TaskFactory {
         public static Task createTask(String name) {
-            return new Task(EspUUID.generateUUID(), name, TaskType.TASK, TaskPriority.LOWEST);
+            return new Task(EspUUID.generateUUID(), name, Type.TASK, Priority.LOWEST);
         }
     }
 
@@ -24,22 +59,22 @@ public class Task implements ITask {
     private final String uuid;
     private String name;
     private float progress;
-    private TaskType type;
-    private TaskState state;
-    private TaskPriority priority;
+    private Type type;
+    private State state;
+    private Priority priority;
     private final ArrayList<ITask> children;
 
     // RUNTIME ATTRIBUTES
     private transient ITask parent;
 
     // CONSTRUCTORS
-    public Task(String uuid, String name, TaskType type, TaskPriority priority) {
+    public Task(String uuid, String name, Type type, Priority priority) {
         this.uuid = uuid;
         this.name = name;
         this.parent = null;
         this.progress = 0;
         this.type = type;
-        this.state = TaskState.NEW;
+        this.state = State.NEW;
         this.priority = priority;
         this.children = new ArrayList<>();
     }
@@ -49,54 +84,71 @@ public class Task implements ITask {
         return uuid;
     }
 
+    @Override
     public String getName() {
         return name;
     }
 
+    @Override
     public ITask getParent() {
         return parent;
     }
 
+    @Override
     public float getProgress() {
         return this.progress;
     }
 
-    public TaskType getType() {
+    @Override
+    public Enum<?> getType() {
         return type;
     }
 
-    public TaskState getState() {
+    @Override
+    public Enum<?> getState() {
         return state;
     }
 
-    public TaskPriority getPriority() {
+    @Override
+    public Enum<?> getPriority() {
         return priority;
     }
 
+    @Override
     public void setName(String name) {
         this.name = name;
     }
 
+    @Override
     public void setParent(ITask parent) {
         this.parent = parent;
     }
 
+    @Override
     public void setProgress(float progress) {
         if (progress < 0) this.progress = 0f;
         else if (progress > 1) this.progress = 1f;
         else this.progress = progress;
     }
 
-    public void setType(TaskType type) {
-        this.type = type;
+    @Override
+    public void setType(Enum<?> type) {
+        this.type = (Type) type;
     }
 
-    public void setState(TaskState state) {
-        this.state = state;
+    @Override
+    public void setState(Enum<?> state) {
+        this.state = (State) state;
     }
 
-    public void setPriority(TaskPriority priority) {
-        this.priority = priority;
+    @Override
+    public void setPriority(Enum<?> priority) {
+        this.priority = (Priority) priority;
+    }
+
+    @Override
+    public ArrayList<ITask> getChildren() {
+        return this.children;
     }
 
     public Object getField(Field field) {
@@ -107,12 +159,19 @@ public class Task implements ITask {
         }
     }
 
-    public ArrayList<ITask> getChildren() {
-        return this.children;
-    }
-
     // METHODS
 
+    @Override
+    public void addComponent(Component newComponent) {
+
+    }
+
+    @Override
+    public void removeComponent(Component toRemove) {
+
+    }
+
+    @Override
     public void addChild(ITask newChild) {
         if (newChild == null) throw new EspRuntimeException("Tried to add null child");
         if (children.contains(newChild))
@@ -122,10 +181,12 @@ public class Task implements ITask {
         this.children.add(newChild);
     }
 
+    @Override
     public void removeChild(ITask toRemove) {
         children.remove(toRemove);
     }
 
+    @Override
     public ITask copy(String uuid) {
         ITask copied = new Task(uuid, this.name, this.type, this.priority);
         copied.setProgress(this.getProgress());

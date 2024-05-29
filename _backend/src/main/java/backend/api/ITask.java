@@ -1,9 +1,5 @@
 package backend.api;
 
-import backend.tasks.TaskPriority;
-import backend.tasks.TaskState;
-import backend.tasks.TaskType;
-
 import java.util.ArrayList;
 
 /**
@@ -15,26 +11,45 @@ public interface ITask {
 
     // GETTERS & SETTERS
     String getUuid();
+
     String getName();
+
     ITask getParent();
-    TaskType getType();
-    TaskState getState();
-    TaskPriority getPriority();
+
+    Enum<?> getType();
+
+    Enum<?> getState();
+
+    Enum<?> getPriority();
+
     float getProgress();
+
     void setName(String name);
+
     void setParent(ITask parent);
-    void setType(TaskType type);
-    void setState(TaskState state);
-    void setPriority(TaskPriority priority);
+
+    void setType(Enum<?> type);
+
+    void setState(Enum<?> state);
+
+    void setPriority(Enum<?> priority);
+
     void setProgress(float progress);
 
     // METHODS
+    void addComponent(Component newComponent);
+
+    void removeComponent(Component toRemove);
+
     ArrayList<ITask> getChildren();
+
     void addChild(ITask newChild);
+
     void removeChild(ITask toRemove);
+
     ITask copy(String uuid);
 
-    public interface DataComponent {
-
+    interface Component {
+        void copy(Component target);
     }
 }

@@ -47,13 +47,13 @@ public class Utils {
                 try {
                     Files.write(file.toPath(), Arrays.asList(lines), StandardCharsets.UTF_8);
                 } catch (IOException e) {
-                    EspLogger.log(Utils.class, "Failed save to file: '" + file.getAbsolutePath() + "'", EspLoggerLevel.ERROR);
+                    EspLogger.log(Utils.class, "Failed save to file: '" + file.getAbsolutePath() + "'", EspLogger.Level.ERROR);
                 }
             } else {
-                EspLogger.log(Utils.class, "Null or empty lines", EspLoggerLevel.ERROR);
+                EspLogger.log(Utils.class, "Null or empty lines", EspLogger.Level.ERROR);
             }
         } else {
-            EspLogger.log(Utils.class, "Invalid file", EspLoggerLevel.ERROR);
+            EspLogger.log(Utils.class, "Invalid file", EspLogger.Level.ERROR);
         }
     }
 
@@ -68,7 +68,7 @@ public class Utils {
             try {
                 data = Files.readAllBytes(Paths.get(file.getPath()));
             } catch (IOException e) {
-                EspLogger.log(Utils.class, "Failed to load data from file '" + file.getPath() + "'", EspLoggerLevel.ERROR);
+                EspLogger.log(Utils.class, "Failed to load data from file '" + file.getPath() + "'", EspLogger.Level.ERROR);
             }
         }
         return data;

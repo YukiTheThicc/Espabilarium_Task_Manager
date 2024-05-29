@@ -58,7 +58,7 @@ public class TaskEditionView extends View {
     @Override
     public void render() {
         int flags = isDirty ? ImGuiTabItemFlags.UnsavedDocument : ImGuiTabItemFlags.None;
-        if (ImGui.beginTabItem(task.getName() + "##" + task.getUuid(), flags)) {
+        if (ImGui.beginTabItem(task.getName() + "###" + task.getUuid(), flags)) {
 
             // Title Bar
             ImGui.pushFont(getLayer().getBigFont());
@@ -85,17 +85,18 @@ public class TaskEditionView extends View {
 
         ImVec2 origin = ImGui.getCursorScreenPos();
         ImVec2 available = ImGui.getContentRegionAvail();
-        ImString name = new ImString(task.getName());
         ImGuiUtils.textLabel(Resources.literal("uuid"), task.getUuid());
-        if (ImGuiUtils.inputText(Resources.literal("name"), name)) {
-            task.setName(name.get());
+        ImString newName = new ImString(task.getName(), 256);
+        if (ImGuiUtils.inputText(Resources.literal("name"), newName)) {
+            task.setName(newName.get());
             isDirty = true;
         }
 
         imgui.ImGui.pushStyleColor(ImGuiCol.Button, activeColor[0], activeColor[1], activeColor[2], activeColor[3]);
         ImGuiUtils.align(AlignX.RIGHT, AlignY.BOTTOM, 128f, EspStyles.SMALL_ICON_SIZE);
         if (ImGui.button(Resources.literal("save"), 60f, EspStyles.SMALL_ICON_SIZE)) {
-            getEventSystem().throwEvent(new Event(Event.Type.STOW_TASK, this.task, 1));
+            if (isNewTask) getEventSystem().throwEvent(new Event(Event.Type.STOW_TASK, this.task, 1));
+            getEventSystem().throwEvent(new Event(Event.Type.UPDATE_TASK, this.task, 1));
             isWaiting = true;
             isNewTask = false;
         }
