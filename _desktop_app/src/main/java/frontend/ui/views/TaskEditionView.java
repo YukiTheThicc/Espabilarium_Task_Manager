@@ -12,6 +12,7 @@ import frontend.utils.EspStyles;
 import frontend.utils.ImGuiUtils;
 import frontend.utils.Resources;
 import imgui.ImVec2;
+import imgui.flag.ImGuiButtonFlags;
 import imgui.flag.ImGuiCol;
 import imgui.flag.ImGuiTabItemFlags;
 import imgui.internal.ImGui;
@@ -66,7 +67,8 @@ public class TaskEditionView extends View {
             ImGui.sameLine();
             ImGui.setCursorPosX(ImGui.getCursorPosX() + ImGui.getContentRegionAvailX() - EspStyles.SMALL_ICON_SIZE - ImGui.getStyle().getFramePaddingX() * 2);
             Image closeCross = (Image) Resources.icon("left_arrow");
-            if (closeCross != null && imgui.ImGui.imageButton(closeCross.getId(), EspStyles.SMALL_ICON_SIZE, EspStyles.SMALL_ICON_SIZE)) shouldClose = true;
+            if (closeCross != null && imgui.ImGui.imageButton(closeCross.getId(), EspStyles.SMALL_ICON_SIZE, EspStyles.SMALL_ICON_SIZE))
+                shouldClose = true;
             ImGui.separator();
             ImGui.popFont();
 
@@ -94,12 +96,21 @@ public class TaskEditionView extends View {
 
         imgui.ImGui.pushStyleColor(ImGuiCol.Button, activeColor[0], activeColor[1], activeColor[2], activeColor[3]);
         ImGuiUtils.align(AlignX.RIGHT, AlignY.BOTTOM, 128f, EspStyles.SMALL_ICON_SIZE);
-        if (ImGui.button(Resources.literal("save"), 60f, EspStyles.SMALL_ICON_SIZE)) {
-            if (isNewTask) getEventSystem().throwEvent(new Event(Event.Type.STOW_TASK, this.task, 1));
-            getEventSystem().throwEvent(new Event(Event.Type.UPDATE_TASK, this.task, 1));
-            isWaiting = true;
-            isNewTask = false;
+        if (!isDirty) {
+            int[] inactive = Resources.color("inactive");
+            ImGui.pushStyleColor(ImGuiCol.Button, inactive[0], inactive[1], inactive[2], inactive[3]);
+            ImGui.pushStyleColor(ImGuiCol.ButtonHovered, inactive[0], inactive[1], inactive[2], inactive[3]);
+            ImGui.pushStyleColor(ImGuiCol.ButtonActive, inactive[0], inactive[1], inactive[2], inactive[3]);
         }
+        if (ImGui.button(Resources.literal("save"), 60f, EspStyles.SMALL_ICON_SIZE)) {
+            if (isDirty) {
+                if (isNewTask) getEventSystem().throwEvent(new Event(Event.Type.STOW_TASK, this.task, 1));
+                getEventSystem().throwEvent(new Event(Event.Type.UPDATE_TASK, this.task, 1));
+                isWaiting = true;
+                isNewTask = false;
+            }
+        }
+        if (!isDirty) ImGui.popStyleColor(3);
         ImGui.sameLine();
         if (ImGui.button(Resources.literal("cancel"), 60f, EspStyles.SMALL_ICON_SIZE)) {
             if (isNewTask) shouldClose = true;
@@ -122,5 +133,9 @@ public class TaskEditionView extends View {
     private void inspectMode() {
         ImGuiUtils.textLabel(Resources.literal("uuid"), task.getUuid());
         ImGuiUtils.textLabel(Resources.literal("name"), task.getName());
+        ImGuiUtils.align(AlignX.RIGHT, AlignY.BOTTOM, 60f, EspStyles.SMALL_ICON_SIZE);
+        if (ImGui.button(Resources.literal("edit"), 60f, EspStyles.SMALL_ICON_SIZE)) {
+            editMode = true;
+        }
     }
 }

@@ -13,7 +13,13 @@
       "type": "IDEA",
       "state": "NEW",
       "priority": "LOWEST",
-      "children": []
+      "children": [],
+      "components": {}
     }
-  ]
+  ],
+  "components": {
+    "1": {
+      "date": "Jun 15, 2010, 5:00:00 PM"
+    }
+  }
 }

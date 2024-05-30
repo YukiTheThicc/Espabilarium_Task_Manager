@@ -37,9 +37,11 @@ public interface ITask {
     void setProgress(float progress);
 
     // METHODS
-    void addComponent(Component newComponent);
+    void addComponent(int hash, Object newComponent);
 
-    void removeComponent(Component toRemove);
+    Object getComponent(int hash);
+
+    void removeComponent(int hash);
 
     ArrayList<ITask> getChildren();
 

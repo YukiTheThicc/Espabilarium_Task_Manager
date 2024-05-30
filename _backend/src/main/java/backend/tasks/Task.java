@@ -6,6 +6,7 @@ import backend.utils.EspUUID;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Task
@@ -63,6 +64,7 @@ public class Task implements ITask {
     private State state;
     private Priority priority;
     private final ArrayList<ITask> children;
+    private final HashMap<Integer, Object> components;
 
     // RUNTIME ATTRIBUTES
     private transient ITask parent;
@@ -76,6 +78,7 @@ public class Task implements ITask {
         this.type = type;
         this.state = State.NEW;
         this.priority = priority;
+        this.components = new HashMap<>();
         this.children = new ArrayList<>();
     }
 
@@ -162,13 +165,18 @@ public class Task implements ITask {
     // METHODS
 
     @Override
-    public void addComponent(Component newComponent) {
-
+    public void addComponent(int hash, Object newComponent) {
+        if (newComponent != null) components.put(hash, newComponent);
     }
 
     @Override
-    public void removeComponent(Component toRemove) {
+    public Object getComponent(int hash) {
+        return components.get(hash);
+    }
 
+    @Override
+    public void removeComponent(int hash) {
+        components.remove(hash);
     }
 
     @Override

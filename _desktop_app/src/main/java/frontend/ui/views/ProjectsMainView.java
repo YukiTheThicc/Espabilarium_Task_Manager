@@ -109,19 +109,13 @@ public class ProjectsMainView extends View implements IEvent.Observer {
 
     private void renderTaskRow(ITask task) {
 
+        // Main Column
         ImGui.tableNextColumn();
         if (ImGui.selectable(task.getName() + "###" + task.getUuid(), false, ImGuiSelectableFlags.SpanAllColumns)) {
-            TaskEditionView newView = new TaskEditionView(getLayer(), getEventSystem(), task, true);
+            TaskEditionView newView = new TaskEditionView(getLayer(), getEventSystem(), task, false);
             this.tasksViews.put(task.getUuid(), newView);
         }
-
-        for (Field field : activeFields) {
-            ImGui.tableNextColumn();
-            Object value = ((Task) task).getField(field);
-            if (value != null) ImGui.text(value.toString());
-        }
     }
-
 
     private void renderOverview() {
         if (ImGui.beginTabItem(Resources.literal("overview"))) {
