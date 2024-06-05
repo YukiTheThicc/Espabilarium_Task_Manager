@@ -34,7 +34,7 @@ public class TaskQueryMaker implements ITaskStowage.QueryMaker {
     }
 
     public void updateTask(ITask task) {
-        stowage.saveTask(task);
+        stowage.saveTask(stowage.getDataDir(), task);
     }
 
     @Override

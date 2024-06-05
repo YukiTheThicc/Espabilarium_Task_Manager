@@ -1,25 +1,17 @@
 {
   "uuid": "00000001",
-  "name": "Saved",
+  "name": "Task 1",
   "progress": 0.0,
   "type": "TASK",
   "state": "NEW",
   "priority": "LOWEST",
-  "children": [
-    {
-      "uuid": "00000002",
-      "name": "Task 2",
-      "progress": 0.0,
-      "type": "IDEA",
-      "state": "NEW",
-      "priority": "LOWEST",
-      "children": [],
-      "components": {}
-    }
-  ],
+  "children": [],
   "components": {
     "1": {
-      "date": "Jun 15, 2010, 5:00:00 PM"
+      "type": "testUtils.TestComp",
+      "components": {
+        "date": "Jun 15, 2010, 5:00:00 PM"
+      }
     }
   }
 }

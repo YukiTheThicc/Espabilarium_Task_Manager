@@ -27,6 +27,7 @@ public class TaskStowage implements ITaskStowage {
     private final String dataDir;
     private final HashMap<String, ITask> tasks;
     private final IEventSystem es;
+    private Serializer serializer;
 
     // CONSTRUCTORS
     public TaskStowage(IEventSystem es, String dataDir) {
@@ -40,6 +41,11 @@ public class TaskStowage implements ITaskStowage {
         return dataDir;
     }
 
+    @Override
+    public void setSerializer(Serializer newSerializer) {
+        this.serializer = newSerializer;
+    }
+
     // METHODS
 
     // >> CRUD METHODS
@@ -50,50 +56,19 @@ public class TaskStowage implements ITaskStowage {
     }
 
     @Override
-    public ITask loadTask(String dataPath) {
-        Gson gson = new GsonBuilder()
-                .setPrettyPrinting()
-                .enableComplexMapKeySerialization()
-                .registerTypeAdapter(ITask.class, new TaskSerializer())
-                .create();
-        String inFile;
+    public ITask loadTask(String path) {
         ITask loaded = null;
-        try {
-            inFile = new String(Files.readAllBytes(Paths.get(dataPath)));
-            if (!inFile.equals("")) {
-                loaded = gson.fromJson(inFile, Task.class);
-            }
-        } catch (Exception e) {
-            return null;
-        }
-        stowTask(loaded);
+        if (serializer != null) loaded = serializer.deserialize(path);
+        if (loaded != null) stowTask(loaded);
         return loaded;
     }
 
     @Override
-    public void saveTask(ITask task) {
-        Gson gson = new GsonBuilder()
-                .setPrettyPrinting()
-                .enableComplexMapKeySerialization()
-                .create();
-        try {
-            File directory = new File(dataDir);
-            if (!directory.exists()) directory.mkdir();
-            if (directory.isDirectory()) {
-                File targetFile = new File(dataDir + task.getUuid() + ".json");
-                targetFile.createNewFile();
-                if (targetFile.isFile()) {
-                    FileWriter writer = new FileWriter(targetFile.getAbsoluteFile());
-                    writer.write(gson.toJson(task));
-                    writer.close();
-                    es.throwEvent(new Event(Event.Type.SAVED_TASK, task.getUuid()));
-                } else {
-                    throw new EspRuntimeException("Could not find nor create the dataPath to save data");
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public boolean saveTask(String dir, ITask task) {
+        boolean success = false;
+        if (serializer != null) success = serializer.serialize(dir, task);
+        if (!success) es.throwEvent(new Event(Event.Type.SAVED_TASK, task.getUuid()));
+        return success;
     }
 
     @Override
