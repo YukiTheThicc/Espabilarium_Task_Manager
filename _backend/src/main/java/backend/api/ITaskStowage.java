@@ -15,6 +15,8 @@ public interface ITaskStowage {
      */
     String getDataDir();
 
+    void setSerializer(ITaskStowage.Serializer serializer);
+
     // >> CRUD METHODS
     /**
      * Attempts to stow the passed task within the system. Should not immediately save to disk the task
@@ -22,7 +24,7 @@ public interface ITaskStowage {
      */
     void stowTask(ITask newTask);
 
-    ITask loadTask(String dataPath);
+    ITask loadTask(String path);
 
     void saveTask(ITask task);
 
@@ -62,5 +64,10 @@ public interface ITaskStowage {
         void updateTask(ITask task);
 
         void removeTask(String uuid);
+    }
+
+    interface Serializer {
+        boolean serialize(ITask task);
+        ITask deserialize(String path);
     }
 }

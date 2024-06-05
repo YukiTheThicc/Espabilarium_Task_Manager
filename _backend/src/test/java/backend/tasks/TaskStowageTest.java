@@ -1,5 +1,6 @@
 package backend.tasks;
 
+import backend.api.IComponent;
 import backend.api.ITask;
 import backend.events.EventSystem;
 import backend.exceptions.EspRuntimeException;
@@ -8,11 +9,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -26,8 +25,8 @@ class TaskStowageTest {
     String testDataPath = new File("src/test/resources").getAbsolutePath() + "\\";
     static SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy'-'hh:mm");
 
-    private static class TestComp1 {
-        private Date date;
+    private static class TestComp1 implements IComponent {
+        private final Date date;
 
         public TestComp1(String date) {
             try {
@@ -36,15 +35,12 @@ class TaskStowageTest {
                 throw new RuntimeException(e);
             }
         }
-
-        public Date getDate() {
-            return date;
-        }
     }
 
     @BeforeEach
     void setUp() {
         sut = new TaskStowage(new EventSystem(), testDataPath);
+        sut.setSerializer(new TaskSerializer(testDataPath));
     }
 
     @Test
@@ -54,8 +50,6 @@ class TaskStowageTest {
         sut.stowTask(task3);
         assertThrows(EspRuntimeException.class, () -> sut.stowTask(null));
     }
-
-
 
     @Test
     void testLoadTask() {
