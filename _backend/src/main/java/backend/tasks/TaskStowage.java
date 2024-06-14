@@ -42,8 +42,9 @@ public class TaskStowage implements ITaskStowage {
     }
 
     @Override
-    public void setSerializer(Serializer newSerializer) {
+    public ITaskStowage setSerializer(Serializer newSerializer) {
         this.serializer = newSerializer;
+        return this;
     }
 
     // METHODS

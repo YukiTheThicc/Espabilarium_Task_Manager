@@ -1,3 +1,9 @@
 rootProject.name = 'Espabilarium_Task_Manager'
 include '_desktop_app'
 include '_backend'
+
+sourceControl {
+    gitRepository("https://github.com/YukiTheThicc/Alma.git") {
+        producesModule("alma:alma-ecs")
+    }
+}

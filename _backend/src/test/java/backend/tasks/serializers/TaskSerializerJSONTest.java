@@ -14,12 +14,16 @@ class TaskSerializerJSONTest {
 
     TaskSerializerJSON sut = new TaskSerializerJSON();
     ITask task1;
+    ITask task2;
     String testDataPath = new File("src/test/resources").getAbsolutePath() + "\\";
 
     @BeforeEach
     void setUp() {
         task1 = new Task("00000001", "Task 1", Task.Type.TASK, Task.Priority.LOWEST);
+        task2 = new Task("00000002", "Task 1 Child", Task.Type.TASK, Task.Priority.LOWEST);
         task1.addComponent(1, new TestComp("15/06/2010-17:00"));
+        task2.addComponent(1, new TestComp("01/01/1999-00:00"));
+        task1.addChild(task2);
     }
 
     @Test
@@ -33,7 +37,7 @@ class TaskSerializerJSONTest {
         assertAll(() -> {
             assertEquals("00000001", loaded.getUuid());
             assertEquals("Task 1", loaded.getName());
-            assertEquals(TestComp.format.parse("15/06/2010-17:00"), loaded.getComponent(1));
+            assertEquals(TestComp.format.parse("15/06/2010-17:00"), ((TestComp) loaded.getComponent(1)).getDate());
         });
     }
 }

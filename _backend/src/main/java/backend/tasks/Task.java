@@ -6,6 +6,7 @@ import backend.utils.EspUUID;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 
 /**
@@ -35,7 +36,7 @@ public class Task implements ITask {
         IN_PROGRESS("in_progress", 2),
         RESOLVED("resolved", 3),
         FINISHED("finished", 4),
-        ARCHIVED("archived", 4);
+        ARCHIVED("archived", 5);
 
         private final String tag;
 
@@ -64,6 +65,7 @@ public class Task implements ITask {
     private State state;
     private Priority priority;
     private final ArrayList<ITask> children;
+    private final ArrayList<String> changeLog;
     private final HashMap<Integer, Object> components;
 
     // RUNTIME ATTRIBUTES
@@ -80,6 +82,7 @@ public class Task implements ITask {
         this.priority = priority;
         this.components = new HashMap<>();
         this.children = new ArrayList<>();
+        this.changeLog = new ArrayList<>();
     }
 
     // GETTERS & SETTERS
@@ -154,17 +157,12 @@ public class Task implements ITask {
         return this.children;
     }
 
-    public Object getField(Field field) {
-        try {
-            return field.get(this);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
+    // METHODS
+    @Override
+    public void addChangeLog(Date date, String message) {
+        this.changeLog.add(date.toString() + "  " );
     }
 
-    // METHODS
-
-    @Override
     public void addComponent(int hash, Object newComponent) {
         if (newComponent != null) components.put(hash, newComponent);
     }

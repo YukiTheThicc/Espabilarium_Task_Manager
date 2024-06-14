@@ -1,6 +1,7 @@
 package backend.api;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * ITask
@@ -37,6 +38,8 @@ public interface ITask {
     void setProgress(float progress);
 
     // METHODS
+    void addChangeLog(Date date, String message);
+
     void addComponent(int hash, Object newComponent);
 
     Object getComponent(int hash);
@@ -52,6 +55,18 @@ public interface ITask {
     ITask copy(String uuid);
 
     interface Component {
-        void copy(Component target);
+
+    }
+
+    /**
+     * Interface to mask objects returning the data of loaded tasks to be the inserted, sorted and indexed by the target
+     * ITaskStowage
+     */
+    interface TaskData {
+        ITask getTask();
+
+        Component[] getComponents();
+
+        String[] getChildrenIDs();
     }
 }

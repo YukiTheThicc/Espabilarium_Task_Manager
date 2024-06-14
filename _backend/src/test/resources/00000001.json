@@ -5,7 +5,27 @@
   "type": "TASK",
   "state": "NEW",
   "priority": "LOWEST",
-  "children": [],
+  "children": [
+    {
+      "uuid": "00000002",
+      "name": "Task 1 Child",
+      "progress": 0.0,
+      "type": "TASK",
+      "state": "NEW",
+      "priority": "LOWEST",
+      "children": [],
+      "changeLog": [],
+      "components": {
+        "1": {
+          "type": "testUtils.TestComp",
+          "components": {
+            "date": "Jan 1, 1999, 12:00:00 AM"
+          }
+        }
+      }
+    }
+  ],
+  "changeLog": [],
   "components": {
     "1": {
       "type": "testUtils.TestComp",

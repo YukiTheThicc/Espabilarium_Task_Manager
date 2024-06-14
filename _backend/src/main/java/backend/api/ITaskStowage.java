@@ -1,5 +1,8 @@
 package backend.api;
 
+import backend.utils.IntKey;
+
+import java.util.Arrays;
 import java.util.Collection;
 
 /**
@@ -15,7 +18,7 @@ public interface ITaskStowage {
      */
     String getDataDir();
 
-    void setSerializer(ITaskStowage.Serializer serializer);
+    ITaskStowage setSerializer(ITaskStowage.Serializer serializer);
 
     // >> CRUD METHODS
     /**
@@ -39,7 +42,7 @@ public interface ITaskStowage {
     void nestTask(ITask parent, ITask Child);
 
     /**
-     * Fetches a single Task by directly fetching it through its ID
+     * Fetches a single Task by directly selecting it by its ID
      * @param taskID UUID of the desired Task
      * @return The desired Task or null if not found
      */
@@ -67,6 +70,7 @@ public interface ITaskStowage {
     }
 
     interface Serializer {
+
         boolean serialize(String dir, ITask task);
         ITask deserialize(String file);
     }

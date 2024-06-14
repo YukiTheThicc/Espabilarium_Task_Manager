@@ -1,6 +1,5 @@
 package backend.tasks.serializers;
 
-import backend.api.IComponent;
 import backend.api.ITaskStowage;
 import backend.exceptions.EspRuntimeException;
 import backend.tasks.Task;
@@ -13,6 +12,7 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Map;
 
 /**
  * TaskSerializer
@@ -27,7 +27,8 @@ public class TaskSerializerJSON implements ITaskStowage.Serializer {
     public boolean serialize(String dir, ITask task) {
         Gson gson = new GsonBuilder()
                 .setPrettyPrinting()
-                .registerTypeHierarchyAdapter(IComponent.class, new ComponentDeserializer())
+                .registerTypeAdapter(ITask.class, new TaskDeserializer())
+                .registerTypeHierarchyAdapter(ITask.Component.class, new ComponentDeserializer())
                 .enableComplexMapKeySerialization()
                 .create();
         try {
@@ -58,7 +59,7 @@ public class TaskSerializerJSON implements ITaskStowage.Serializer {
                 .setPrettyPrinting()
                 .enableComplexMapKeySerialization()
                 .registerTypeAdapter(ITask.class, new TaskDeserializer())
-                .registerTypeAdapter(IComponent.class, new ComponentDeserializer())
+                .registerTypeAdapter(ITask.Component.class, new ComponentDeserializer())
                 .create();
         String inFile;
         ITask loaded = null;
@@ -74,6 +75,7 @@ public class TaskSerializerJSON implements ITaskStowage.Serializer {
     }
 
     private static class TaskDeserializer implements JsonDeserializer<Task> {
+
         @Override
         public Task deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
             JsonObject jsonObject = json.getAsJsonObject();
@@ -84,12 +86,16 @@ public class TaskSerializerJSON implements ITaskStowage.Serializer {
             JsonElement state = jsonObject.get("state");
             JsonElement priority = jsonObject.get("priority");
             JsonArray children = jsonObject.getAsJsonArray("children");
-            JsonObject components = jsonObject.getAsJsonObject("components");
+            Map<String, JsonElement> components = jsonObject.getAsJsonObject("components").asMap();
             try {
                 Task task = new Task(uuid.getAsString(), name.getAsString(),
                         Task.Type.valueOf(type.getAsString()), Task.Priority.valueOf(priority.getAsString()));
                 task.setProgress(progress.getAsFloat());
                 task.setState(Task.State.valueOf(state.getAsString()));
+                for (JsonElement c : components.values()) {
+                    ITask.Component component = context.deserialize(c, ITask.Component.class);
+                    task.addComponent(1, component);
+                }
                 return task;
             } catch (Exception e) {
                 throw new JsonParseException("Failed to load task", e);
@@ -97,7 +103,7 @@ public class TaskSerializerJSON implements ITaskStowage.Serializer {
         }
     }
 
-    private static class ComponentDeserializer implements JsonDeserializer<IComponent>, JsonSerializer<IComponent> {
+    private static class ComponentDeserializer implements JsonDeserializer<ITask.Component>, JsonSerializer<ITask.Component> {
 
         private final Gson gson;
 
@@ -106,7 +112,7 @@ public class TaskSerializerJSON implements ITaskStowage.Serializer {
         }
 
         @Override
-        public JsonElement serialize(IComponent src, Type typeOfSrc, JsonSerializationContext context) {
+        public JsonElement serialize(ITask.Component src, Type typeOfSrc, JsonSerializationContext context) {
             final JsonObject wrapper = new JsonObject();
             wrapper.addProperty("type", src.getClass().getName());
             wrapper.add("components", gson.toJsonTree(src));
@@ -114,7 +120,7 @@ public class TaskSerializerJSON implements ITaskStowage.Serializer {
         }
 
         @Override
-        public IComponent deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+        public ITask.Component deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
             JsonObject jsonObject = json.getAsJsonObject();
             String type = jsonObject.get("type").getAsString();
             JsonElement element = jsonObject.get("components");
